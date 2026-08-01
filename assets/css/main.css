@@ -795,7 +795,18 @@ blockquote{
   width:100%;max-width:var(--max);margin-inline:auto;
   padding:clamp(3rem,7vw,5rem) var(--gut) clamp(6rem,9vw,7rem);
 }
-.hero__content{max-width:900px}
+.hero__content{
+  max-width:900px;position:relative;
+  padding-left:clamp(1rem,2.2vw,1.9rem);
+}
+/* gold rule anchoring the copy — grows in with the headline */
+.hero__content::before{
+  content:"";position:absolute;left:0;top:.35rem;bottom:.4rem;width:4px;
+  background:linear-gradient(to bottom,var(--gold-400),rgba(255,240,15,.05));
+  transform:scaleY(0);transform-origin:top;
+  transition:transform .8s var(--ease-out) .1s;
+}
+.hero.is-ready .hero__content::before{transform:scaleY(1)}
 
 /* eyebrow */
 .hero__badge{
@@ -822,7 +833,8 @@ blockquote{
   font-stretch:110%;max-width:16ch;
   text-shadow:0 8px 46px rgba(0,0,0,.5);
 }
-.hero__title .line{display:block;overflow:hidden;padding-bottom:.06em}
+/* generous descender room, or the mask shears the tail off the italic "y" */
+.hero__title .line{display:block;overflow:hidden;padding-bottom:.2em;margin-bottom:-.15em}
 .hero__title .line > span{
   display:block;transform:translateY(105%);
   transition:transform .62s var(--ease-out);
@@ -959,7 +971,11 @@ blockquote{
 /* the italic serif accent must survive the line-splitter's word wrapping */
 .hero__title .serif-i,[data-lines] .serif-i{
   font-family:var(--font-serif);font-style:italic;font-weight:700;
-  text-transform:none;letter-spacing:-.02em;font-stretch:normal;
+  text-transform:none;letter-spacing:-.015em;font-stretch:normal;
+  /* Bodoni sits visually smaller than Archivo caps — size it up so the two
+     read as one line of type rather than two different headlines */
+  font-size:1.16em;line-height:.86;
+  padding-right:.06em;
 }
 .hero__title .serif-i{color:var(--gold-400)}
 [data-lines] .as-em{font-style:normal;color:var(--gold-500)}
@@ -2386,6 +2402,44 @@ blockquote{
   .collage{grid-template-columns:1fr 1fr}
   .footer-grid{grid-template-columns:repeat(2,1fr)}
   .footer-brand{grid-column:1/-1}
+}
+
+/* Mobile footer: two tight columns so the link lists stop running the page
+   on for a screen and a half, and the empty right-hand gutter is used. */
+@media (max-width:639px){
+  /* minmax(0,…) or the longest link forces one column twice as wide as the other */
+  .footer-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem 1.1rem}
+  .footer-brand{grid-column:1/-1;gap:.75rem;
+    display:grid;grid-template-columns:72px 1fr;align-items:start;column-gap:1rem}
+  .footer-brand img{width:72px;grid-row:span 2}
+  .footer-brand p{font-size:.84rem;max-width:none;line-height:1.6}
+  .footer-brand .footer-motto{grid-column:2;font-size:.72rem}
+  .footer-brand .footer-social{grid-column:1/-1;margin-top:.3rem}
+  /* Contact is the last column — give it the full width for the address block */
+  .footer-col:last-of-type{grid-column:1/-1}
+  .footer-col h4{font-size:.76rem;margin-bottom:.7rem;padding-bottom:.5rem}
+  .footer-col ul{gap:0}
+  .footer-col li a{
+    display:block;padding:.44rem 0;font-size:.86rem;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .footer-col a::before{display:none}
+  /* address, phones, email and WhatsApp sit two-up instead of one long stack */
+  .footer-contact{gap:.7rem 1.1rem;grid-template-columns:1fr 1fr}
+  .footer-contact li{font-size:.84rem}
+  .footer-contact li:first-child{grid-column:1/-1}
+  .footer-main{padding-block:2rem 1.4rem}
+  .footer-legal{flex-direction:column;align-items:flex-start;gap:.6rem;text-align:left}
+  .footer-legal ul{gap:.45rem 1rem}
+  .footer-social a{width:38px;height:38px}
+  .footer-cta__inner{gap:1rem}
+  .footer-watermark{display:none}
+}
+@media (max-width:359px){
+  .footer-grid{grid-template-columns:minmax(0,1fr)}
+  .footer-brand{grid-template-columns:1fr}
+  .footer-brand img{grid-row:auto}
+  .footer-contact{grid-template-columns:1fr}
 }
 @media (min-width:768px){
   .ticker__nav{display:flex}

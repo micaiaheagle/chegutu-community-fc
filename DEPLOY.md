@@ -1,131 +1,145 @@
-# Deploying — GitHub then Cloudflare Pages
+# Putting the website live — no commands needed
 
-The repository is already initialised and committed on branch `main`, with the
-remote pointed at `https://github.com/micaiaheagle/chegutu-community-fc.git`.
-Everything below runs from inside this `website` folder.
+There are two files in this folder you can **double-click**. That is the whole job.
 
-Both steps need **your** credentials, which is why they were not run for you.
-
----
-
-## Step 1 — Push to GitHub (2 minutes)
-
-Authenticate once:
-
-```bash
-gh auth login
+```
+1-PUBLISH-TO-GITHUB.bat     puts the code on GitHub
+2-PUBLISH-TO-VERCEL.bat     puts the website live on the internet
 ```
 
-Choose **GitHub.com → HTTPS → Login with a web browser**, and paste the one-time
-code it shows you.
-
-Then create the repository and push:
-
-```bash
-gh repo create micaiaheagle/chegutu-community-fc --public --source=. --remote=origin --push
-```
-
-> If `gh` complains that the remote already exists, that is expected — it was
-> pre-configured. Use `git push -u origin main` instead.
-
-**Without the `gh` CLI:** create an empty repo named `chegutu-community-fc` at
-<https://github.com/new> (no README, no .gitignore), then:
-
-```bash
-git push -u origin main
-```
-
-Note: the repository is about 28 MB because of the 246 photograph files. That is
-well inside GitHub's limits.
+You do not have to use both. If you only want the site live, run **number 2**.
 
 ---
 
-## Step 2 — Deploy to Cloudflare Pages
+## Before you start — install these two, once
 
-### Option A — connect the repo (recommended, auto-deploys on every push)
+Both are normal Windows installers. Click through, accept the defaults.
 
-1. Go to <https://dash.cloudflare.com> → **Workers & Pages** → **Create** →
-   **Pages** → **Connect to Git**.
-2. Authorise GitHub and select **chegutu-community-fc**.
-3. Set the build settings to:
-
-   | Field | Value |
-   |---|---|
-   | Framework preset | **None** |
-   | Build command | *(leave completely empty)* |
-   | Build output directory | `/` |
-   | Root directory | *(leave empty)* |
-
-4. **Save and Deploy.**
-
-You get `chegutu-community-fc.pages.dev` in about a minute, and every future
-`git push` redeploys automatically.
-
-### Option B — deploy straight from this folder
-
-```bash
-npx wrangler login
-npx wrangler pages deploy . --project-name=chegutu-community-fc
-```
-
-`wrangler login` opens your browser once. After that the deploy command works on
-its own.
-
----
-
-## Step 3 — Point your domain at it
-
-Cloudflare Pages → your project → **Custom domains** → **Set up a custom domain**
-→ enter `chegutucommunityfc.com` (and `www`). If the domain is already on
-Cloudflare DNS the records are created for you and HTTPS is automatic.
-
-Then update the domain in three files and push again:
-
-- `sitemap.xml` — every `<loc>`
-- `robots.txt` — the `Sitemap:` line
-- the `og:url` and `canonical` tags in each page (find and replace
-  `chegutucommunityfc.com` across the folder)
-
----
-
-## Important: the contact forms on Cloudflare
-
-**Cloudflare Pages does not run PHP.** `form-handler.php` works on cPanel but
-will not run on Pages. On Pages the site automatically falls back to opening the
-visitor's email app with their details pre-filled, so no form silently fails —
-but you have three better options:
-
-1. **Host on cPanel instead** — PHP works, nothing to change. Use `.htaccess`,
-   which is already in this folder.
-2. **Use a form service** — sign up at Formspree or Web3Forms, then change one
-   line in `assets/js/main.js`:
-
-   ```js
-   fetch('form-handler.php', { method: 'POST', body: data })
-   ```
-   becomes
-   ```js
-   fetch('https://formspree.io/f/YOUR_ID', { method: 'POST', body: data, headers: {Accept: 'application/json'} })
-   ```
-3. **Use a Cloudflare Pages Function** — create `functions/api/contact.js` and
-   point the same fetch at `/api/contact`. Ask your developer for this if you
-   want everything staying inside Cloudflare.
-
-`_headers` and `_redirects` in this folder are the Cloudflare equivalents of
-`.htaccess` and are already configured — security headers, one-year asset
-caching, and the custom 404.
-
----
-
-## Which host should the club actually use?
-
-| | cPanel | Cloudflare Pages |
+| What | Where | Needed for |
 |---|---|---|
-| Contact forms | Work out of the box | Need a form service or a Function |
-| Speed worldwide | One server | Global CDN, much faster from anywhere |
-| Cost | Your existing hosting bill | Free tier is plenty for this site |
-| Updating | Re-upload changed files | `git push` and it redeploys |
+| **GitHub CLI** | <https://cli.github.com> | file 1 |
+| **Node.js** (choose **LTS**) | <https://nodejs.org> | file 2 |
+
+Restart the computer after installing, then carry on.
+
+---
+
+## File 1 — Publish to GitHub
+
+Double-click **`1-PUBLISH-TO-GITHUB.bat`**.
+
+1. Press a key when it asks.
+2. It signs you in to GitHub. When the menu appears, choose:
+   **GitHub.com** → **HTTPS** → **Login with a web browser**.
+3. It shows an eight-character code like `A1B2-C3D4`. Copy it.
+4. Your browser opens. Paste the code, and approve.
+5. Come back to the black window. It uploads on its own — about 75 MB, so
+   give it a few minutes.
+
+When it finishes, your repository is at
+<https://github.com/micaiaheagle/chegutu-community-fc>
+
+---
+
+## File 2 — Publish to Vercel (this is what makes it live)
+
+Double-click **`2-PUBLISH-TO-VERCEL.bat`**.
+
+1. Press a key when it asks.
+2. Type your email address and press Enter.
+3. Vercel emails you a confirmation link. Open your inbox, click it.
+4. Come back to the black window — it will have continued on its own.
+5. If it asks any questions, pressing **Enter** for each is fine.
+   If it asks about linking to an existing project, say **no**.
+
+When it finishes it prints an address ending in **.vercel.app**.
+That is your live website. Open it in a browser.
+
+---
+
+## If a black window closes instantly
+
+That means Windows blocked it. Right-click the `.bat` file →
+**Properties** → tick **Unblock** at the bottom → **OK**. Then try again.
+
+## If you would rather not use the .bat files at all
+
+Do it entirely in a browser:
+
+1. Go to <https://vercel.com/new> and sign in with your GitHub account.
+2. Run file 1 first so the repository exists, then pick
+   **chegutu-community-fc** from the list.
+3. Framework preset **Other**, build command **empty**, output directory **`.`**
+4. **Deploy.**
+
+Every later `git push` then redeploys the site automatically.
+
+---
+
+## Using your own domain
+
+Vercel → your project → **Settings** → **Domains** → add
+`chegutucommunityfc.com`. Vercel shows you the two DNS records to enter at
+whoever sells you the domain. HTTPS is automatic.
+
+Then update the domain in three places and publish again:
+
+- `sitemap.xml` — every `<loc>` line
+- `robots.txt` — the `Sitemap:` line
+- the `canonical` and `og:url` tags in each page — use your editor's
+  Find-and-Replace across the folder, searching for `chegutucommunityfc.com`
+
+---
+
+## One catch: the contact forms on Vercel
+
+**Vercel does not run PHP.** `form-handler.php` works on cPanel hosting but
+not on Vercel. On Vercel the site falls back to opening the visitor's own email
+app with their details already filled in, so nothing fails silently — but it is
+not as smooth.
+
+Three ways to fix it, easiest first:
+
+1. **Use a free form service.** Sign up at <https://web3forms.com> (no account
+   needed, they email you a key). Then open `assets/js/main.js`, search for
+   `form-handler.php`, and change that one line to:
+
+   ```js
+   fetch('https://api.web3forms.com/submit', {
+     method: 'POST',
+     body: (data.append('access_key', 'YOUR-KEY-HERE'), data)
+   })
+   ```
+
+2. **Host on cPanel instead.** PHP works there with no changes at all — use the
+   `.htaccess` file that is already in this folder.
+
+3. **Add a Vercel Function.** Ask a developer for this if you want everything
+   inside Vercel.
+
+---
+
+## Which host should the club use?
+
+| | cPanel | Vercel |
+|---|---|---|
+| Contact forms | Work straight away | Need a form service |
+| Speed worldwide | One server | Global network, much faster |
+| Cost | Your hosting bill | Free for a site this size |
+| Updating | Re-upload changed files | Automatic on every push |
 | HTTPS | AutoSSL, a few clicks | Automatic |
 
-**Recommendation:** deploy to Cloudflare Pages for speed and free hosting, and
-point the forms at Formspree's free tier. Keep the cPanel copy as a fallback.
+**Recommendation:** Vercel for the speed and the free hosting, with Web3Forms
+handling the contact forms. Keep the cPanel copy as a backup.
+
+---
+
+## Files already prepared for you
+
+- `vercel.json` — clean URLs, security headers, one-year caching
+- `_headers` and `_redirects` — the same thing for Cloudflare Pages, in case
+  you ever move
+- `.htaccess` — the same thing again for cPanel/Apache
+- `.gitignore` — keeps form submissions out of the public repository
+
+None of these need editing.

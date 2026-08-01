@@ -399,6 +399,10 @@
         video.load();
         var pr = video.play();
         if (pr && pr.catch) pr.catch(function () { /* autoplay blocked — poster stays */ });
+        /* when the match footage finishes, hand straight over to the slides */
+        video.addEventListener('ended', function () {
+          if (slides[i] === vSlide) { copyIdx[i] = 0; go(i + 1); }
+        });
       } else {
         video.parentNode.removeChild(video);
         video = null;
@@ -422,13 +426,57 @@
     if (slides.length < 2) return;
     var i = 0, timer = null, busy = false;
 
-    function copyFor(n) {
-      var s = slides[n];
-      return {
-        badge: s.getAttribute('data-badge'),
-        title: s.getAttribute('data-title'),
-        lead:  s.getAttribute('data-lead')
-      };
+    /* A slide may carry several copy sets in data-texts (JSON). They rotate on
+       the slide's own dwell before the hero moves to the next slide — which is
+       how the video holds while six different messages pass over it. */
+    var copySets = slides.map(function (s) {
+      var raw = s.getAttribute('data-texts');
+      if (raw) {
+        try {
+          var arr = JSON.parse(raw);
+          if (arr && arr.length) return arr;
+        } catch (e) { /* fall through to the single-set form */ }
+      }
+      return [{ badge: s.getAttribute('data-badge'), title: s.getAttribute('data-title'), lead: s.getAttribute('data-lead') }];
+    });
+    var copyIdx = slides.map(function () { return 0; });
+
+    function copyFor(n) { return copySets[n][copyIdx[n]] || copySets[n][0]; }
+    function hasMoreCopy(n) { return copyIdx[n] < copySets[n].length - 1; }
+
+    /* Swap only the words, leaving the picture (or the video) running. */
+    function swapCopy(n) {
+      if (busy) return;
+      busy = true;
+      var c = copyFor(n);
+      hero.classList.add('is-out');
+      window.setTimeout(function () {
+        hero.classList.remove('is-ready');
+        hero.classList.remove('is-out');
+        if (badgeEl && c.badge) badgeEl.lastChild.textContent = ' ' + c.badge;
+        if (leadEl && c.lead) leadEl.textContent = c.lead;
+        if (c.title && titleEl) {
+          titleEl.dataset.splitHtml = c.title;
+          titleEl.dataset.splitDone = '';
+          if (REDUCED) titleEl.innerHTML = c.title; else splitLines(titleEl);
+        }
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { hero.classList.add('is-ready'); busy = false; });
+        });
+      }, REDUCED ? 0 : 300);
+      restart();
+    }
+
+    function advance() {
+      /* still more to say over this slide? change the words, keep the picture */
+      if (hasMoreCopy(i)) { copyIdx[i]++; swapCopy(i); return; }
+      /* the footage is still running — start the messages again rather than
+         cutting away mid-match; the slides take over when the video ends */
+      if (vSlide && slides[i] === vSlide && video && !video.ended) {
+        copyIdx[i] = 0; swapCopy(i); return;
+      }
+      copyIdx[i] = 0;
+      go(i + 1);
     }
 
     function go(n) {
@@ -437,6 +485,7 @@
       if (n === i) return;
       busy = true;
 
+      copyIdx[n] = 0;
       var c = copyFor(n);
       var prev = slides[i];
       var next = slides[n];
@@ -486,7 +535,7 @@
     function restart() {
       stop();
       hero.style.setProperty('--hero-delay', dwellOf(i) + 'ms');
-      if (!REDUCED) timer = setTimeout(function () { go(i + 1); }, dwellOf(i));
+      if (!REDUCED) timer = setTimeout(advance, dwellOf(i));
     }
     function stop() { if (timer) clearTimeout(timer); timer = null; }
 
