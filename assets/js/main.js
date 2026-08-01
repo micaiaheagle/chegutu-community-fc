@@ -17,6 +17,25 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+
+  /* WebP support, decided once. Everything the JS renders then asks for the
+     lighter file; browsers that cannot decode it keep getting the JPEG. */
+  var USE_WEBP = (function () {
+    try {
+      var c = document.createElement('canvas');
+      return c.toDataURL && c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    } catch (e) { return false; }
+  })();
+  /* Only photos/ and thumbs/ have WebP twins. Anything the club drops in
+     later (staff headshots, new folders) is served exactly as supplied. */
+  function img(path) {
+    var p = String(path);
+    if (!USE_WEBP) return p;
+    /* a bare filename belongs to photos/ or thumbs/; any other folder is
+       something the club added later and has no WebP twin */
+    if (p.indexOf('/') > -1 && !/^(photos|thumbs)\//.test(p)) return p;
+    return p.replace(/\.jpe?g$/i, '.webp');
+  }
   /* Content in data.js already contains a few safe HTML entities (&amp; &rsquo;)
      so trusted strings pass through unescaped. User input never does. */
   function raw(s) { return String(s == null ? '' : s); }
@@ -396,13 +415,38 @@
         srcEl.src = video.getAttribute(window.innerWidth >= 1100 ? 'data-src-720' : 'data-src-480');
         srcEl.type = 'video/mp4';
         video.appendChild(srcEl);
-        video.load();
-        var pr = video.play();
-        if (pr && pr.catch) pr.catch(function () { /* autoplay blocked — poster stays */ });
+        /* Do not start until enough is buffered to run without stuttering,
+           and never fight the rest of the page for bandwidth on first paint. */
+        video.preload = 'auto';
+        var started = false;
+        function tryStart() {
+          if (started || video.readyState < 3) return;   /* 3 = HAVE_FUTURE_DATA */
+          started = true;
+          var pr = video.play();
+          if (pr && pr.catch) pr.catch(function () { /* autoplay blocked — poster stays */ });
+        }
+        video.addEventListener('canplaythrough', tryStart);
+        video.addEventListener('loadeddata', function () { setTimeout(tryStart, 400); });
+        /* if the network drops out mid-play, pause and wait rather than judder */
+        video.addEventListener('waiting', function () {
+          if (video.readyState < 3) video.pause();
+        });
+        video.addEventListener('canplay', function () {
+          if (started && video.paused && slides[i] === vSlide && !video.ended) {
+            var r = video.play(); if (r && r.catch) r.catch(function () {});
+          }
+        });
         /* when the match footage finishes, hand straight over to the slides */
         video.addEventListener('ended', function () {
           if (slides[i] === vSlide) { copyIdx[i] = 0; go(i + 1); }
         });
+        /* give the images and fonts a clear run first */
+        if (document.readyState === 'complete') video.load();
+        else on(window, 'load', function () { setTimeout(function () { video.load(); }, 300); });
+        /* safety net: if the video never becomes ready, move on rather than stall */
+        setTimeout(function () {
+          if (!started && slides[i] === vSlide) { copyIdx[i] = 0; go(i + 1); }
+        }, 12000);
       } else {
         video.parentNode.removeChild(video);
         video = null;
@@ -422,6 +466,24 @@
     if (titleEl && !REDUCED) splitLines(titleEl);
     requestAnimationFrame(function () { requestAnimationFrame(function () { hero.classList.add('is-ready'); }); });
     syncVideo(0);
+
+    /* Slides 2+ ship with their picture held back in data-src, so first paint
+       fetches one image instead of six. Wake a slide just before it is needed,
+       and top the rest up once the page has finished its own loading. */
+    function wake(n) {
+      var el = slides[n]; if (!el || el.dataset.woke) return;
+      el.dataset.woke = '1';
+      $$('source[data-srcset]', el).forEach(function (s) {
+        s.srcset = s.getAttribute('data-srcset'); s.removeAttribute('data-srcset');
+      });
+      $$('img[data-src]', el).forEach(function (im) {
+        im.src = im.getAttribute('data-src'); im.removeAttribute('data-src');
+      });
+    }
+    wake(1);                       /* the one that comes next */
+    function wakeRest() { slides.forEach(function (_, n) { wake(n); }); }
+    if (document.readyState === 'complete') setTimeout(wakeRest, 1200);
+    else on(window, 'load', function () { setTimeout(wakeRest, 1200); });
 
     if (slides.length < 2) return;
     var i = 0, timer = null, busy = false;
@@ -541,8 +603,14 @@
 
     dots.forEach(function (d, n) { on(d, 'click', function () { go(n); }); });
     thumbs.forEach(function (t, n) { on(t, 'click', function () { go(n); }); });
-    on(hero, 'mouseenter', stop);
-    on(hero, 'mouseleave', restart);
+    /* The hero fills the screen, so pausing on hover would freeze the rotation
+       almost permanently. Only the thumbnail rail holds it — that is where
+       someone is deliberately choosing a slide. */
+    var rail = hero.querySelector('.hero__rail');
+    if (rail) {
+      on(rail, 'mouseenter', stop);
+      on(rail, 'mouseleave', restart);
+    }
     on(document, 'visibilitychange', function () { document.hidden ? stop() : restart(); });
 
     var x0 = null;
@@ -976,7 +1044,7 @@
     var html = '';
     if (lead) {
       html += '<div class="staff-lead" data-reveal="rise">' +
-        '<div class="staff-lead__img" data-wipe><img src="assets/img/' + esc(lead.photo) + '" alt="' + esc(String(lead.name).replace(/&amp;/g, '&')) + ', ' + esc(String(lead.role).replace(/&rsquo;/g, '’')) + '" loading="lazy" width="720" height="900" onerror="' + FALLBACK + '"></div>' +
+        '<div class="staff-lead__img" data-wipe><img src="assets/img/' + esc(img(lead.photo)) + '" alt="' + esc(String(lead.name).replace(/&amp;/g, '&')) + ', ' + esc(String(lead.role).replace(/&rsquo;/g, '’')) + '" loading="lazy" width="720" height="900" onerror="' + FALLBACK + '"></div>' +
         '<div class="staff-lead__body">' +
           '<p class="kicker">' + raw(lead.dept) + '</p>' +
           '<h3 class="staff-lead__name">' + raw(lead.name) + '</h3>' +
@@ -992,7 +1060,7 @@
     html += Object.keys(groups).map(function (dept) {
       return '<div class="mb-3" data-reveal><h3 class="mb-2" style="padding-bottom:.6rem;border-bottom:2px solid var(--gold-400)">' + raw(dept) + '</h3>' +
         '<div class="grid grid-2">' + groups[dept].map(function (s) {
-          return '<article class="staff-card"><div class="staff-card__img"><img src="assets/img/' + esc(s.photo) + '" alt="" loading="lazy" width="220" height="260" onerror="' + FALLBACK + '"></div>' +
+          return '<article class="staff-card"><div class="staff-card__img"><img src="assets/img/' + esc(img(s.photo)) + '" alt="" loading="lazy" width="220" height="260" onerror="' + FALLBACK + '"></div>' +
             '<div class="staff-card__body"><span class="staff-card__role">' + raw(s.role) + '</span>' +
             '<span class="staff-card__name">' + raw(s.name) + '</span>' +
             '<span class="staff-card__dept">' + raw(s.dept) + ' Department</span></div></article>';
@@ -1006,7 +1074,7 @@
   /* ========================================================= NEWS ======= */
   function newsCard(n, feature) {
     return '<article class="card' + (feature ? ' card--feature card--overlay' : '') + '" data-reveal>' +
-      '<div class="card__media"><img src="assets/img/' + esc(n.img) + '" alt="" loading="lazy" decoding="async" width="800" height="500"></div>' +
+      '<div class="card__media"><img src="assets/img/' + esc(img(n.img)) + '" alt="" loading="lazy" decoding="async" width="800" height="500"></div>' +
       '<span class="badge card__badge">' + raw(n.cat) + '</span>' +
       '<div class="card__body">' +
         '<h3 class="card__title">' + raw(n.title) + '</h3>' +
@@ -1093,7 +1161,7 @@
       host.innerHTML = items.map(function (v) {
         var tag = v.file ? 'button type="button"' : 'a href="videos.html#' + esc(v.id) + '"';
         return '<' + tag + ' class="video-card" data-reveal="zoom"' + (v.file ? ' data-play="' + esc(v.file) + '"' : '') + '>' +
-          '<img src="assets/img/' + esc(v.img) + '" alt="" loading="lazy" width="800" height="450">' +
+          '<img src="assets/img/' + esc(img(v.img)) + '" alt="" loading="lazy" width="800" height="450">' +
           '<span class="video-card__play"><span>' + icon('i-play') + '</span></span>' +
           '<span class="video-card__body"><span>' + raw(v.cat) + ' &middot; ' + esc(v.dur) +
             (v.credit ? ' &middot; ' + raw(v.credit) : '') + '</span><h4>' + raw(v.title) + '</h4></span>' +
@@ -1159,7 +1227,7 @@
 
   function galItem(g, i) {
     return '<button type="button" class="gal-item" data-gal="' + i + '" data-reveal="zoom" aria-label="Open photo: ' + esc(g.cap) + '">' +
-      '<img src="assets/img/thumbs/' + esc(g.id) + '" alt="' + esc(g.cap) + '" loading="lazy" decoding="async" width="' + g.w + '" height="' + g.h + '">' +
+      '<img src="assets/img/thumbs/' + esc(img(g.id)) + '" alt="' + esc(g.cap) + '" loading="lazy" decoding="async" width="' + g.w + '" height="' + g.h + '">' +
       '<span class="gal-item__zoom">' + icon('i-zoom') + '</span>' +
       '<span class="gal-item__cap">' + esc(g.cap) + '</span></button>';
   }
@@ -1200,8 +1268,8 @@
   }
   function paintLightbox() {
     var g = LB.items[LB.i]; if (!g) return;
-    var img = $('#lbImg'), cap = $('#lbCap'), num = $('#lbNum');
-    if (img) { img.src = 'assets/img/photos/' + g.id; img.alt = g.cap; }
+    var el = $('#lbImg'), cap = $('#lbCap'), num = $('#lbNum');
+    if (el) { el.src = 'assets/img/photos/' + img(g.id); el.alt = g.cap; }
     if (cap) cap.textContent = g.cap;
     if (num) num.textContent = (LB.i + 1) + ' / ' + LB.items.length;
   }
@@ -1260,7 +1328,7 @@
     }
     body.innerHTML = cart.map(function (l, i) {
       return '<div class="cart-line">' +
-        '<img src="assets/img/' + esc(l.img) + '" alt="" width="64" height="64" loading="lazy">' +
+        '<img src="assets/img/' + esc(img(l.img)) + '" alt="" width="64" height="64" loading="lazy">' +
         '<div><div class="cart-line__name">' + raw(l.name) + '</div>' +
         '<div class="cart-line__meta">' + esc(l.size) + ' &middot; ' + money(l.price) + '</div>' +
         '<div class="qty" style="margin-top:.35rem"><button type="button" data-cart-dec="' + i + '" aria-label="Decrease quantity">' + icon('i-minus') + '</button>' +
@@ -1311,7 +1379,7 @@
       var items = cat === 'All' ? all : all.filter(function (p) { return p.cat === cat; });
       host.innerHTML = items.map(function (p) {
         return '<article class="product" data-reveal>' +
-          '<div class="product__media"><img src="assets/img/' + esc(p.img) + '" alt="' + esc(String(p.name).replace(/&amp;/g, '&')) + '" loading="lazy" width="600" height="600"></div>' +
+          '<div class="product__media"><img src="assets/img/' + esc(img(p.img)) + '" alt="' + esc(String(p.name).replace(/&amp;/g, '&')) + '" loading="lazy" width="600" height="600"></div>' +
           (p.tag ? '<span class="badge badge--gold product__tag">' + raw(p.tag) + '</span>' : '') +
           '<div class="product__body">' +
             '<span class="product__cat">' + raw(p.cat) + '</span>' +

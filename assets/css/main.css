@@ -128,6 +128,7 @@ body{
 }
 body.nav-open{overflow:hidden}
 img,svg,video,canvas{display:block;max-width:100%;height:auto}
+picture{display:contents}   /* WebP wrapper must not affect layout */
 /* Only photographic containers get a placeholder tint — logos stay transparent */
 .card__media img,.gal-item img,.promo img,.page-hero img,.hero__slide img,
 .product__media img,.split__media img,.cta-band__bg,.video-card img,
@@ -2189,12 +2190,12 @@ blockquote{
 [data-wipe="up"].is-in::after{transform:translateY(101%)}
 .no-js [data-wipe]::after{display:none}
 /* the photo settles out of a slow push as the curtain leaves */
-[data-wipe] > img{transform:scale(1.16);transition:transform 1.7s var(--ease-power);transition-delay:var(--rd,0ms)}
-[data-wipe].is-in > img{transform:scale(1)}
+[data-wipe] img{transform:scale(1.16);transition:transform 1.7s var(--ease-power);transition-delay:var(--rd,0ms)}
+[data-wipe].is-in img{transform:scale(1)}
 
 /* Parallax — JS sets --py from scroll position */
 [data-parallax]{will-change:transform}
-[data-parallax] > img,img[data-parallax]{transform:translate3d(0,var(--py,0px),0) scale(1.14)}
+[data-parallax] img,img[data-parallax]{transform:translate3d(0,var(--py,0px),0) scale(1.14)}
 
 /* Counting-up figures get a subtle pop when they land */
 .stat.is-counted .stat__num{animation:statPop .5s var(--ease-spring)}
@@ -2378,8 +2379,8 @@ blockquote{
   [data-reveal]{opacity:1;transform:none}
   [data-lines] .line > span{transform:none}
   [data-wipe]::after{display:none}
-  [data-wipe] > img{transform:none}
-  [data-parallax] > img,img[data-parallax]{transform:none}
+  [data-wipe] img{transform:none}
+  [data-parallax] img,img[data-parallax]{transform:none}
   .marquee__track{animation:none;transform:none}
   .marquee{transform:none}
   .hero__slide{transition:none}
