@@ -380,11 +380,44 @@
     var leadEl  = $('#heroLead');
     var badgeEl = $('#heroBadge');
     var DELAY = 5200;
-    hero.style.setProperty('--hero-delay', DELAY + 'ms');
+
+    /* ---- background video ------------------------------------------------
+       Loaded only where it is worth the data: wide viewport, no Save-Data,
+       not a 2g/3g connection. Everywhere else the poster frame stands in, so
+       nobody burns a mobile bundle on a 5 MB autoplay. */
+    var vSlide = hero.querySelector('.hero__slide--video');
+    var video = vSlide ? vSlide.querySelector('video') : null;
+    if (video) {
+      var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var slow = conn && (conn.saveData === true || /^(2g|3g|slow-2g)$/.test(conn.effectiveType || ''));
+      var wide = window.matchMedia('(min-width: 768px)').matches;
+      if (!slow && wide && !REDUCED) {
+        var srcEl = document.createElement('source');
+        srcEl.src = video.getAttribute(window.innerWidth >= 1100 ? 'data-src-720' : 'data-src-480');
+        srcEl.type = 'video/mp4';
+        video.appendChild(srcEl);
+        video.load();
+        var pr = video.play();
+        if (pr && pr.catch) pr.catch(function () { /* autoplay blocked — poster stays */ });
+      } else {
+        video.parentNode.removeChild(video);
+        video = null;
+      }
+    }
+    function syncVideo(n) {
+      hero.classList.toggle('is-video', !!(vSlide && slides[n] === vSlide));
+      if (!video) return;
+      if (slides[n] === vSlide) {
+        try { video.currentTime = 0; } catch (e) {}
+        var q = video.play(); if (q && q.catch) q.catch(function () {});
+      } else { video.pause(); }
+    }
+    function dwellOf(n) { return +(slides[n].getAttribute('data-dwell') || DELAY); }
 
     /* headline rises out of its mask on first paint */
     if (titleEl && !REDUCED) splitLines(titleEl);
     requestAnimationFrame(function () { requestAnimationFrame(function () { hero.classList.add('is-ready'); }); });
+    syncVideo(0);
 
     if (slides.length < 2) return;
     var i = 0, timer = null, busy = false;
@@ -424,6 +457,7 @@
         prev.classList.add('is-leaving');
         prev.classList.remove('is-active');
         next.classList.add('is-active');
+        syncVideo(n);
         window.setTimeout(function () {
           prev.classList.remove('is-leaving');
           busy = false;
@@ -449,7 +483,11 @@
       restart();
     }
 
-    function restart() { stop(); if (!REDUCED) timer = setTimeout(function () { go(i + 1); }, DELAY); }
+    function restart() {
+      stop();
+      hero.style.setProperty('--hero-delay', dwellOf(i) + 'ms');
+      if (!REDUCED) timer = setTimeout(function () { go(i + 1); }, dwellOf(i));
+    }
     function stop() { if (timer) clearTimeout(timer); timer = null; }
 
     dots.forEach(function (d, n) { on(d, 'click', function () { go(n); }); });
@@ -881,17 +919,38 @@
   /* ======================================================== STAFF ======= */
   function initStaff() {
     var host = $('#staffGrid'); if (!host) return;
+    var all = D.staff || [];
+    var FALLBACK = "this.onerror=null;this.src='assets/img/crest-512.png';this.style.objectFit='contain';this.style.padding='14%';this.style.background='var(--green-100)'";
+
+    /* whoever is flagged `lead` gets the large feature card at the top */
+    var lead = all.filter(function (s) { return s.lead; })[0];
+    var html = '';
+    if (lead) {
+      html += '<div class="staff-lead" data-reveal="rise">' +
+        '<div class="staff-lead__img" data-wipe><img src="assets/img/' + esc(lead.photo) + '" alt="' + esc(String(lead.name).replace(/&amp;/g, '&')) + ', ' + esc(String(lead.role).replace(/&rsquo;/g, '’')) + '" loading="lazy" width="720" height="900" onerror="' + FALLBACK + '"></div>' +
+        '<div class="staff-lead__body">' +
+          '<p class="kicker">' + raw(lead.dept) + '</p>' +
+          '<h3 class="staff-lead__name">' + raw(lead.name) + '</h3>' +
+          '<p class="staff-lead__role">' + raw(lead.role) + '</p>' +
+          (lead.bio ? '<p class="staff-lead__bio">' + raw(lead.bio) + '</p>' : '') +
+          '<div class="cluster mt-2"><a class="btn btn--sm" href="team-women.html">Women&rsquo;s First Team <svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>' +
+          '<a class="btn btn--sm btn--ghost" href="contact.html">Contact the Club</a></div>' +
+        '</div></div>';
+    }
+
     var groups = {};
-    (D.staff || []).forEach(function (s) { (groups[s.dept] = groups[s.dept] || []).push(s); });
-    host.innerHTML = Object.keys(groups).map(function (dept) {
+    all.forEach(function (s) { if (!s.lead) (groups[s.dept] = groups[s.dept] || []).push(s); });
+    html += Object.keys(groups).map(function (dept) {
       return '<div class="mb-3" data-reveal><h3 class="mb-2" style="padding-bottom:.6rem;border-bottom:2px solid var(--gold-400)">' + raw(dept) + '</h3>' +
         '<div class="grid grid-2">' + groups[dept].map(function (s) {
-          return '<article class="staff-card"><div class="staff-card__img"><img src="assets/img/' + esc(s.photo) + '" alt="" loading="lazy" width="220" height="260"></div>' +
+          return '<article class="staff-card"><div class="staff-card__img"><img src="assets/img/' + esc(s.photo) + '" alt="" loading="lazy" width="220" height="260" onerror="' + FALLBACK + '"></div>' +
             '<div class="staff-card__body"><span class="staff-card__role">' + raw(s.role) + '</span>' +
             '<span class="staff-card__name">' + raw(s.name) + '</span>' +
             '<span class="staff-card__dept">' + raw(s.dept) + ' Department</span></div></article>';
         }).join('') + '</div></div>';
     }).join('');
+
+    host.innerHTML = html;
     initReveal();
   }
 
@@ -983,11 +1042,19 @@
     function render(cat) {
       var items = cat === 'all' ? all : all.filter(function (v) { return v.cat === cat; });
       host.innerHTML = items.map(function (v) {
-        return '<a class="video-card" href="videos.html#' + esc(v.id) + '" data-reveal="zoom">' +
+        var tag = v.file ? 'button type="button"' : 'a href="videos.html#' + esc(v.id) + '"';
+        return '<' + tag + ' class="video-card" data-reveal="zoom"' + (v.file ? ' data-play="' + esc(v.file) + '"' : '') + '>' +
           '<img src="assets/img/' + esc(v.img) + '" alt="" loading="lazy" width="800" height="450">' +
           '<span class="video-card__play"><span>' + icon('i-play') + '</span></span>' +
-          '<span class="video-card__body"><span>' + raw(v.cat) + ' &middot; ' + esc(v.dur) + '</span><h4>' + raw(v.title) + '</h4></span></a>';
+          '<span class="video-card__body"><span>' + raw(v.cat) + ' &middot; ' + esc(v.dur) +
+            (v.credit ? ' &middot; ' + raw(v.credit) : '') + '</span><h4>' + raw(v.title) + '</h4></span>' +
+          '</' + (v.file ? 'button' : 'a') + '>';
       }).join('') || '<div class="empty" style="grid-column:1/-1">' + icon('i-video') + '<h4>No videos yet</h4></div>';
+
+      /* playable clips open in the lightbox shell as a real <video> */
+      $$('[data-play]', host).forEach(function (b) {
+        on(b, 'click', function () { openVideo(b.getAttribute('data-play'), b.querySelector('h4').textContent); });
+      });
       initReveal();
     }
     render('all');
@@ -1054,6 +1121,26 @@
     });
   }
 
+  /* Plays a club video inside the existing lightbox shell. */
+  function openVideo(src, title) {
+    var lb = $('#lightbox'); if (!lb) { window.open(src, '_blank', 'noopener'); return; }
+    var stage = $('.lightbox__stage', lb), img = $('#lbImg'), cap = $('#lbCap'), num = $('#lbNum');
+    if (img) img.style.display = 'none';
+    $$('.lightbox__btn', lb).forEach(function (b) { b.style.display = 'none'; });
+    var old = stage.querySelector('video'); if (old) old.remove();
+    var v = document.createElement('video');
+    v.src = src; v.controls = true; v.autoplay = true; v.playsInline = true;
+    v.setAttribute('controlsList', 'nodownload');
+    v.style.cssText = 'max-width:100%;max-height:100%;width:auto;border-radius:var(--r-sm);box-shadow:0 30px 80px rgba(0,0,0,.6);background:#000';
+    stage.appendChild(v);
+    if (cap) cap.textContent = title || '';
+    if (num) num.textContent = 'Video';
+    lb.classList.add('is-open');
+    document.body.classList.add('nav-open');
+    var c = $('#lbClose'); if (c) c.focus();
+    lb.setAttribute('data-mode', 'video');
+  }
+
   function openLightbox(i) {
     var lb = $('#lightbox'); if (!lb) return;
     LB.i = i;
@@ -1071,8 +1158,20 @@
   }
   function initLightboxChrome() {
     var lb = $('#lightbox'); if (!lb) return;
-    function close() { lb.classList.remove('is-open'); document.body.classList.remove('nav-open'); }
-    function step(d) { LB.i = (LB.i + d + LB.items.length) % LB.items.length; paintLightbox(); }
+    function close() {
+      lb.classList.remove('is-open');
+      document.body.classList.remove('nav-open');
+      /* tear down any playing video and restore the photo viewer */
+      var v = lb.querySelector('video');
+      if (v) { v.pause(); v.remove(); }
+      var img = $('#lbImg'); if (img) img.style.display = '';
+      $$('.lightbox__btn', lb).forEach(function (b) { b.style.display = ''; });
+      lb.removeAttribute('data-mode');
+    }
+    function step(d) {
+      if (lb.getAttribute('data-mode') === 'video') return;
+      LB.i = (LB.i + d + LB.items.length) % LB.items.length; paintLightbox();
+    }
     on($('#lbClose'), 'click', close);
     on($('#lbPrev'), 'click', function () { step(-1); });
     on($('#lbNext'), 'click', function () { step(1); });

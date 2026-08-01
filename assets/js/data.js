@@ -52,7 +52,10 @@ CCFC.fixtures = [
 
 /* --------------------------------------------------------------- RESULTS */
 CCFC.results = [
-  { id:'r1',  team:'women', date:'2026-08-01', opponent:'Cyclone Queens',        home:true,  gf:3, ga:0, comp:'ZWPSL',        scorers:'Moyo 12’, Ncube 44’, Dube 71’', report:'a1' },
+  /* REAL RESULT — taken from the club's own match footage (see the hero video
+     and the Video page). Everything below it is sample data. */
+  { id:'r0',  team:'women', date:'2026-08-02', opponent:'Herentals Queens',      home:true,  gf:1, ga:3, comp:'ZWPSL',        scorers:'—', report:'a1' },
+  { id:'r1',  team:'women', date:'2026-07-25', opponent:'Cyclone Queens',        home:true,  gf:3, ga:0, comp:'ZWPSL',        scorers:'Moyo 12’, Ncube 44’, Dube 71’' },
   { id:'r2',  team:'women', date:'2026-07-25', opponent:'Blue Swallows Queens',  home:false, gf:2, ga:2, comp:'ZWPSL',        scorers:'Chirwa 23’, Moyo 88’' },
   { id:'r3',  team:'boys',  date:'2026-07-26', opponent:'TelOne Chegutu',        home:true,  gf:2, ga:1, comp:'Division Two', scorers:'Mutasa 33’, Banda 65’' },
   { id:'r4',  team:'women', date:'2026-07-18', opponent:'Faith Drive Queens',    home:true,  gf:4, ga:1, comp:'ZWPSL',        scorers:'Dube 8’, 52’, Moyo 30’, Sibanda 77’' },
@@ -136,7 +139,13 @@ CCFC.squad = [
 
 /* ----------------------------------------------------------------- STAFF */
 CCFC.staff = [
-  { name:'Head Coach',                    role:'Women’s First Team',   dept:'Football Operations', photo:'photos/p053.jpg' },
+  /* `lead: true` gives a member of staff the large feature card.
+     Replace `name` with her real name when you are ready to publish it. */
+  { name:'Head Coach', role:'Women’s First Team', dept:'Football Operations',
+    photo:'staff/head-coach.jpg', lead:true,
+    bio:'Leads the Women’s First Team in the Zimbabwe Women’s Premier Soccer League, ' +
+        'responsible for selection, training programme, match preparation and the ' +
+        'development of every player in the senior women’s squad.' },
   { name:'Assistant Coach',               role:'Women’s First Team',   dept:'Football Operations', photo:'photos/p013.jpg' },
   { name:'Goalkeeping Coach',             role:'Both Senior Teams',         dept:'Football Operations', photo:'photos/p012.jpg' },
   { name:'Head Coach',                    role:'Boys First Team',           dept:'Football Operations', photo:'photos/p096.jpg' },
@@ -223,7 +232,12 @@ CCFC.news = [
 
 /* ---------------------------------------------------------------- VIDEOS */
 CCFC.videos = [
-  { id:'v1', cat:'Highlights', title:'Match Highlights — Queens 3-0 Cyclone Queens', dur:'6:42', date:'2026-08-01', img:'photos/p068.jpg' },
+  /* REAL FOOTAGE — the club's own match video, filmed by Chegutu Pulse.
+     `file` makes the card play inline instead of just linking out. */
+  { id:'v0', cat:'Highlights', title:'Full Match — Chegutu Community Queens v Herentals Queens',
+    dur:'3:22', date:'2026-08-02', img:'../video/hero-poster.jpg',
+    file:'assets/video/hero-720.mp4', credit:'Filmed by Chegutu Pulse' },
+  { id:'v1', cat:'Highlights', title:'Match Highlights — Queens 3-0 Cyclone Queens', dur:'6:42', date:'2026-07-25', img:'photos/p068.jpg' },
   { id:'v2', cat:'Interviews', title:'Post-Match: Head Coach reacts to the opening win', dur:'4:18', date:'2026-08-01', img:'photos/p013.jpg' },
   { id:'v3', cat:'Training',   title:'Inside Training: pre-season at Pfupajena',        dur:'8:05', date:'2026-07-28', img:'photos/p065.jpg' },
   { id:'v4', cat:'Interviews', title:'Player Feature: from the academy to the first team', dur:'5:33', date:'2026-07-24', img:'photos/p036.jpg' },

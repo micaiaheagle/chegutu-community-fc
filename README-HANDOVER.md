@@ -120,13 +120,55 @@ into the club's own policy on the Safeguarding page.
 
 ---
 
+## 4b. Two things waiting for you
+
+### The head coach's photograph — **one file drop**
+
+Save her photo (green club tracksuit, light wall) as:
+
+```
+assets/img/staff/head-coach.jpg
+```
+
+Portrait orientation, at least 720 × 900px, under about 250 KB. The moment the
+file exists she appears as the large feature card at the top of **Coaches &
+Staff**. Until then the site shows the club crest in its place rather than a
+broken image — but the browser console will log one 404 for that file, which
+disappears as soon as you add it.
+
+To publish her **name**, open `assets/js/data.js`, find the first entry in
+`CCFC.staff` and replace `'Head Coach'` with her name. Her role line stays.
+Her name was deliberately not invented.
+
+### The hero video
+
+`videos/chegutu video.mp4` (3:22, 78 MB) has been cut and compressed into:
+
+| File | Use | Size |
+|---|---|---|
+| `assets/video/hero-720.mp4` | desktop hero background | 5.5 MB |
+| `assets/video/hero-480.mp4` | narrower screens | 2.5 MB |
+| `assets/video/hero-poster.jpg` | still frame / fallback | 141 KB |
+
+It is a 60-second cut starting at 0:20 of the original, silent, and it loops.
+The original file is untouched.
+
+**Data-conscious by design:** the video only loads on screens 768px and wider,
+and never when the browser reports Save-Data or a 2G/3G connection. On a phone
+in Chegutu the poster frame shows instead and the photo slides carry the hero —
+nobody's bundle gets spent on a 5 MB autoplay.
+
+To swap the video later, replace those three files keeping the same names.
+
+---
+
 ## 5. What is placeholder content
 
 Replace these before promoting the site widely:
 
 | What | Where | Note |
 |---|---|---|
-| Fixtures, results, league standings | `data.js` | Realistic sample data using real league club names. **Scores and standings are invented.** |
+| Fixtures, results, league standings | `data.js` | Realistic sample data using real league club names. **Scores and standings are invented — with one exception:** the top result, `Chegutu Community Queens 1–3 Herentals Queens`, is the real scoreline read off the club's own match footage. It is marked with a comment in the file. |
 | Squad names, ages, appearance and goal totals | `data.js` → `CCFC.squad` | Sample players. Squad cards deliberately use the club crest rather than a photograph, so no real person appears beside a placeholder name. |
 | Staff names | `data.js` → `CCFC.staff` | Roles and departments are real; individual names are marked "Head Coach" etc. until you supply them. |
 | News articles | `data.js` → `CCFC.news` | Written to be plausible and on-message, but they are drafts, not published history. |

@@ -1,0 +1,23 @@
+HEAD COACH PHOTOGRAPH
+=====================
+
+Save the head coach's photograph in THIS folder, named exactly:
+
+    head-coach.jpg
+
+That is the photo of her in the green club tracksuit against the light wall.
+
+Recommended: portrait orientation, at least 720 x 900 pixels, saved as JPEG
+at around 80% quality so the file stays under about 250 KB.
+
+The website already expects this file. The moment you drop it in, she appears
+as the large feature card at the top of the Coaches & Staff page. Until then
+the site shows the club crest in its place rather than a broken image.
+
+To add her NAME, open  assets/js/data.js , find:
+
+    { name:'Head Coach', role:'Women's First Team', ...
+
+and replace 'Head Coach' with her name. Her role line stays as it is.
+
+You can delete this text file afterwards.

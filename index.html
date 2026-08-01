@@ -392,37 +392,52 @@
 <!-- ============================================================ HERO ==== -->
 <section class="hero" id="hero" aria-roledescription="carousel" aria-label="Club highlights">
   <div class="hero__slides">
-    <div class="hero__slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 4"
+    <div class="hero__slide hero__slide--video is-active" role="group" aria-roledescription="slide" aria-label="1 of 6" data-dwell="14000"
+         data-badge="Matchday &bull; Queens v Herentals Queens"
+         data-title="This is <span class=&quot;serif-i&quot;>matchday</span> in Chegutu"
+         data-lead="Real football, played on a real pitch, in front of the people who raised these players. Come and stand with the Queens at Pfupajena Grounds.">
+      <img class="hero__poster" src="assets/video/hero-poster.jpg" alt="Chegutu Community Queens in action against Herentals Queens" width="1280" height="720" fetchpriority="high">
+      <video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+             data-src-720="assets/video/hero-720.mp4" data-src-480="assets/video/hero-480.mp4"
+             poster="assets/video/hero-poster.jpg" width="1280" height="720"></video>
+    </div>
+    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="2 of 6"
          data-badge="Chegutu &bull; Mashonaland West &bull; Zimbabwe"
          data-title="One Club. <span class=&quot;serif-i&quot;>One Community.</span> One Dream."
          data-lead="Chegutu Community Football Club develops boys and girls into outstanding footballers, responsible citizens and future leaders — through elite coaching, education, safeguarding and a genuine pathway to professional football.">
-      <img src="assets/img/photos/p116.jpg" alt="Chegutu Community FC squad members gathered in front of the club team bus" style="object-position:center 40%" fetchpriority="high" width="1280" height="853">
+      <img src="assets/img/photos/p116.jpg" alt="Chegutu Community FC squad members gathered in front of the club team bus" style="object-position:center 40%" loading="lazy" width="1280" height="853">
     </div>
-    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="2 of 4"
+    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="3 of 6"
          data-badge="Zimbabwe Women&rsquo;s Premier Soccer League"
          data-title="The Queens play <span class=&quot;serif-i&quot;>at the very top</span>"
          data-lead="Chegutu Community Queens FC compete at the highest level of women’s football in Zimbabwe — a route to national teams, universities and professional clubs worldwide.">
-      <img src="assets/img/photos/p003.jpg" alt="The women's team lined up on the pitch with match officials before kick-off" style="object-position:center 42%" loading="lazy" width="1280" height="498">
+      <img src="assets/img/photos/p003.jpg" alt="The women&rsquo;s team lined up on the pitch with match officials before kick-off" style="object-position:center 42%" loading="lazy" width="1280" height="498">
     </div>
-    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="3 of 4"
+    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="4 of 6"
          data-badge="Silverware &bull; 2026"
          data-title="Built in Chegutu. <span class=&quot;serif-i&quot;>Winning</span> for Chegutu."
          data-lead="We do not buy a team — we build one, from this town, with players from this town. Every trophy belongs to the community that raised them.">
       <img src="assets/img/photos/p072.jpg" alt="Club members in green tracksuits holding a trophy beside the branded team bus" style="object-position:center 38%" loading="lazy" width="1280" height="853">
     </div>
-    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="4 of 4"
+    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="5 of 6"
          data-badge="Academy &bull; Under 8 to Under 20"
          data-title="Talent is <span class=&quot;serif-i&quot;>developed</span> here"
          data-lead="Seven academy age groups, a published player pathway and full academic support. Ability to pay has never been a condition of playing for this club.">
-      <img src="assets/img/photos/p046.jpg" alt="The squad standing shoulder to shoulder in prayer in front of the goal" style="object-position:center 55%" loading="lazy" width="1280" height="853">
+      <img src="assets/img/photos/p014.jpg" alt="A coach greeting a young player at an academy session" style="object-position:center 32%" loading="lazy" width="1280" height="853">
+    </div>
+    <div class="hero__slide" role="group" aria-roledescription="slide" aria-label="6 of 6"
+         data-badge="Girls&rsquo; Football &bull; Equality"
+         data-title="Every girl deserves a pitch, a coach and <span class=&quot;serif-i&quot;>a chance</span>"
+         data-lead="Girls’ and boys’ football here get the same coaching hours, the same medical cover and the same opportunities. Equality is a budget line, not a slogan.">
+      <img src="assets/img/photos/p046.jpg" alt="The squad standing shoulder to shoulder in front of the goal" style="object-position:center 55%" loading="lazy" width="1280" height="853">
     </div>
   </div>
 
   <div class="hero__inner">
     <div class="hero__content">
-      <span class="hero__badge" id="heroBadge"><svg aria-hidden="true"><use href="#i-sparkle"/></svg> Chegutu &bull; Mashonaland West &bull; Zimbabwe</span>
-      <h1 class="hero__title" id="heroTitle">One Club. <span class="serif-i">One Community.</span> One Dream.</h1>
-      <p class="hero__lead" id="heroLead">Chegutu Community Football Club develops boys and girls into outstanding footballers, responsible citizens and future leaders &mdash; through elite coaching, education, safeguarding and a genuine pathway to professional football.</p>
+      <span class="hero__badge" id="heroBadge"><svg aria-hidden="true"><use href="#i-sparkle"/></svg> Matchday &bull; Queens v Herentals Queens</span>
+      <h1 class="hero__title" id="heroTitle">This is <span class="serif-i">matchday</span> in Chegutu</h1>
+      <p class="hero__lead" id="heroLead">Real football, played on a real pitch, in front of the people who raised these players. Come and stand with the Queens at Pfupajena Grounds.</p>
       <div class="hero__actions">
         <a class="btn btn--gold btn--lg" href="register.html">Join the Academy <svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
         <a class="btn btn--ghost-light btn--lg" href="fixtures.html">Fixtures &amp; Results</a>
@@ -430,15 +445,19 @@
     </div>
   </div>
 
+  <span class="hero__vtag"><i aria-hidden="true"></i> Match Footage &bull; Queens v Herentals <span class="hero__vsound">Sound off</span></span>
+
   <span class="hero__scroll" aria-hidden="true">Scroll <svg><use href="#i-arrow-down"/></svg></span>
 
   <div class="hero__rail">
-    <span class="hero__count"><b id="heroCur">01</b>&thinsp;/&thinsp;04</span>
+    <span class="hero__count"><b id="heroCur">01</b>&thinsp;/&thinsp;06</span>
     <div class="hero__thumbs" id="heroThumbs" role="tablist" aria-label="Choose a slide">
-      <button class="hero__thumb" type="button" role="tab" aria-current="true" aria-label="Slide 1: the squad and the team bus"><img src="assets/img/thumbs/p116.jpg" alt="" width="86" height="56" loading="lazy"></button>
-      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 2: matchday line-up"><img src="assets/img/thumbs/p003.jpg" alt="" width="86" height="56" loading="lazy"></button>
-      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 3: trophy day"><img src="assets/img/thumbs/p072.jpg" alt="" width="86" height="56" loading="lazy"></button>
-      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 4: the academy"><img src="assets/img/thumbs/p046.jpg" alt="" width="86" height="56" loading="lazy"></button>
+      <button class="hero__thumb" type="button" role="tab" aria-current="true" aria-label="Slide 1: match footage"><img src="assets/video/hero-poster.jpg" alt="" width="86" height="56" loading="lazy"></button>
+      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 2: the squad and the team bus"><img src="assets/img/thumbs/p116.jpg" alt="" width="86" height="56" loading="lazy"></button>
+      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 3: matchday line-up"><img src="assets/img/thumbs/p003.jpg" alt="" width="86" height="56" loading="lazy"></button>
+      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 4: trophy day"><img src="assets/img/thumbs/p072.jpg" alt="" width="86" height="56" loading="lazy"></button>
+      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 5: the academy"><img src="assets/img/thumbs/p014.jpg" alt="" width="86" height="56" loading="lazy"></button>
+      <button class="hero__thumb" type="button" role="tab" aria-current="false" aria-label="Slide 6: girls football"><img src="assets/img/thumbs/p046.jpg" alt="" width="86" height="56" loading="lazy"></button>
     </div>
   </div>
 
@@ -447,6 +466,8 @@
     <button type="button" role="tab" aria-current="false" aria-label="Slide 2"></button>
     <button type="button" role="tab" aria-current="false" aria-label="Slide 3"></button>
     <button type="button" role="tab" aria-current="false" aria-label="Slide 4"></button>
+    <button type="button" role="tab" aria-current="false" aria-label="Slide 5"></button>
+    <button type="button" role="tab" aria-current="false" aria-label="Slide 6"></button>
   </div>
 
   <div class="hero__strip">
