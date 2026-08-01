@@ -1,0 +1,12 @@
+# Local copies of website form submissions — never commit these
+form-submissions/
+*.log
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+*.bak
+*~
+.vscode/
+.idea/

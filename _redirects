@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects.
+# Pages already serves /fixtures for fixtures.html automatically, so this file
+# only needs to cover the tidy-up cases.
+
+# Never expose the local copies of form submissions
+/form-submissions/*   /404.html   404
+
+# Custom 404 for anything unmatched (must stay last)
+/*                    /404.html   404

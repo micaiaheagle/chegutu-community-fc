@@ -1,0 +1,7 @@
+# Chegutu Community Football Club
+User-agent: *
+Allow: /
+Disallow: /form-submissions/
+Disallow: /form-handler.php
+
+Sitemap: https://www.chegutucommunityfc.com/sitemap.xml

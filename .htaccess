@@ -1,0 +1,113 @@
+# ============================================================================
+# CHEGUTU COMMUNITY FOOTBALL CLUB — Apache configuration for cPanel hosting
+# Upload this file to public_html alongside index.html.
+# ============================================================================
+
+# ---------------------------------------------------------------- DEFAULTS --
+DirectoryIndex index.html index.php
+Options -Indexes
+ServerSignature Off
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # ---- FORCE HTTPS ---------------------------------------------------------
+  # Activate this AFTER your SSL certificate is installed in cPanel
+  # (cPanel > Security > SSL/TLS Status > Run AutoSSL).
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+  # ---- FORCE www ----------------------------------------------------------
+  # Remove the leading # on the next two lines to canonicalise to www.
+  # RewriteCond %{HTTP_HOST} !^www\. [NC]
+  # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
+
+  # ---- CLEAN URLS ---------------------------------------------------------
+  # Lets /fixtures work as well as /fixtures.html
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.*)$ $1.html [L]
+
+  # Redirect an explicit .html request to the clean URL (one canonical address)
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L,NE]
+</IfModule>
+
+# ------------------------------------------------------------ ERROR PAGES --
+ErrorDocument 404 /404.html
+ErrorDocument 403 /404.html
+
+# -------------------------------------------------------------- COMPRESSION -
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript text/javascript
+  AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml application/manifest+json
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json image/svg+xml
+</IfModule>
+
+# ------------------------------------------------------------ BROWSER CACHE -
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                              "access plus 1 month"
+  ExpiresByType text/html                     "access plus 0 seconds"
+  ExpiresByType text/css                      "access plus 1 year"
+  ExpiresByType application/javascript        "access plus 1 year"
+  ExpiresByType image/jpeg                    "access plus 1 year"
+  ExpiresByType image/png                     "access plus 1 year"
+  ExpiresByType image/webp                    "access plus 1 year"
+  ExpiresByType image/svg+xml                 "access plus 1 year"
+  ExpiresByType image/x-icon                  "access plus 1 year"
+  ExpiresByType font/woff2                    "access plus 1 year"
+  ExpiresByType application/manifest+json     "access plus 1 week"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|woff2|jpg|jpeg|png|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # ---- SECURITY HEADERS ---------------------------------------------------
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+  # Enable once HTTPS is confirmed working on every page:
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  Header unset X-Powered-By
+</IfModule>
+
+# ------------------------------------------------------------- MIME TYPES ---
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType image/webp .webp
+  AddType image/svg+xml .svg
+  AddType application/manifest+json .webmanifest
+  AddCharset UTF-8 .html .css .js .json .xml .webmanifest
+</IfModule>
+
+# ------------------------------------------------------------ PROTECT FILES -
+<FilesMatch "^(\.htaccess|\.htpasswd|README-HANDOVER\.md|.*\.log|.*\.bak|.*\.md)$">
+  Require all denied
+</FilesMatch>
+
+# Never serve the local copies of form submissions
+RedirectMatch 404 ^/form-submissions(/.*)?$
+
+# --------------------------------------------------------------- HOTLINKING -
+# Stops other websites embedding our photographs and using our bandwidth.
+# Replace chegutucommunityfc.com with your live domain before enabling.
+# <IfModule mod_rewrite.c>
+#   RewriteCond %{HTTP_REFERER} !^$
+#   RewriteCond %{HTTP_REFERER} !chegutucommunityfc\.com [NC]
+#   RewriteRule \.(jpg|jpeg|png|webp)$ - [F,NC]
+# </IfModule>
