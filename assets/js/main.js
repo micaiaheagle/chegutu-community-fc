@@ -863,6 +863,8 @@
     if (nextWrap && all[0]) nextWrap.innerHTML = matchCard(all[0]);
     var res = (D.results || []).slice().sort(function (a, b) { return a.date > b.date ? -1 : 1; });
     if (prevWrap && res[0]) prevWrap.innerHTML = resultCard(res[0]);
+    var prev2 = $('#prevResult2');
+    if (prev2 && res[0]) prev2.innerHTML = resultCard(res[0]);
 
     var rg = $('#resultsGrid');
     if (rg) {
@@ -942,31 +944,9 @@
     var w = $('#tableWomen'), b = $('#tableBoys'), mini = $('#tableMini');
     if (w) renderTable(w, 'women');
     if (b) renderTable(b, 'boys');
-    if (mini) {
-      var t = D.tables.women;
-      var all = t.rows, ci = all.findIndex(function (r) { return r.club; });
-      /* always show the leaders and always show us, however far apart they are */
-      var show = all.slice(0, 4);
-      var gap = false;
-      if (ci > 4) {
-        gap = true;
-        show = show.concat(all.slice(Math.max(4, ci - 1), Math.min(all.length, ci + 2)));
-      } else {
-        show = all.slice(0, 6);
-      }
-      function row(r) {
-        var gd = r.gf - r.ga;
-        return '<tr' + (r.club ? ' class="is-club"' : '') + '><td>' + r.pos + '</td>' +
-          '<td><span class="team-cell">' + (r.club ? '<img src="assets/img/crest-64.png" alt="" width="26" height="23">' : '<span class="mini-crest">' + esc(initials(r.team)) + '</span>') +
-          '<b>' + raw(r.team) + '</b></span></td><td class="num">' + r.p + '</td><td>' + (gd > 0 ? '+' : '') + gd + '</td><td class="num">' + (r.w * 3 + r.d) + '</td></tr>';
-      }
-      var body = show.slice(0, 4).map(row).join('') +
-        (gap ? '<tr class="is-gap"><td colspan="5">&middot;&middot;&middot;</td></tr>' : '') +
-        show.slice(4).map(row).join('');
-      mini.innerHTML = '<div class="table-wrap"><table class="data-table" style="min-width:0"><thead><tr>' +
-        '<th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">GD</th><th scope="col">PTS</th></tr></thead><tbody>' +
-        body + '</tbody></table></div>';
-    }
+    /* The homepage shows the league table in full, exactly as the league
+       publishes it — every club, in order, with the same columns. */
+    if (mini) renderTable(mini, 'women');
   }
 
   /* ======================================================== SQUAD ======= */
