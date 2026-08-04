@@ -8,17 +8,17 @@
  *
  * SETUP — change these two lines and nothing else:
  */
-$CLUB_EMAIL = 'info@chegutucommunityfc.com';   // where enquiries are delivered
-$FROM_EMAIL = 'website@chegutucommunityfc.com'; // must be a real mailbox on YOUR domain
+$CLUB_EMAIL = 'admin@ccfc-zw.com';   // where enquiries are delivered
+$FROM_EMAIL = 'admin@ccfc-zw.com'; // must be a real mailbox on YOUR domain
 
 /**
  * Optional: send safeguarding and commercial enquiries to their own inbox.
  * Leave blank to send everything to $CLUB_EMAIL.
  */
 $ROUTES = [
-    'Safeguarding'              => '',   // e.g. 'safeguarding@chegutucommunityfc.com'
-    'Commercial & partnerships' => '',   // e.g. 'partners@chegutucommunityfc.com'
-    'Media & press'             => '',   // e.g. 'media@chegutucommunityfc.com'
+    'Safeguarding'              => '',   // e.g. 'admin@ccfc-zw.com'
+    'Commercial & partnerships' => '',   // e.g. 'admin@ccfc-zw.com'
+    'Media & press'             => '',   // e.g. 'admin@ccfc-zw.com'
 ];
 // ---------------------------------------------------------------------------
 
@@ -130,5 +130,5 @@ if ($sent) {
     ]);
 } else {
     // mail() disabled or misconfigured — tell the browser to offer the email fallback
-    fail('We could not send your message automatically. Please email info@chegutucommunityfc.com or call +263 784 658 667.', 500);
+    fail('We could not send your message automatically. Please email admin@ccfc-zw.com or call +263 784 658 667.', 500);
 }

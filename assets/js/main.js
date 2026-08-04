@@ -1587,7 +1587,7 @@
           /* No PHP available (e.g. opened directly from disk) — hand off to email */
           var lines = [];
           data.forEach(function (v, k) { if (k.charAt(0) !== '_' && String(v).trim()) lines.push(k + ': ' + v); });
-          var mail = 'mailto:info@chegutucommunityfc.com?subject=' + encodeURIComponent(form.getAttribute('data-form')) +
+          var mail = 'mailto:admin@ccfc-zw.com?subject=' + encodeURIComponent(form.getAttribute('data-form')) +
             '&body=' + encodeURIComponent(lines.join('\n'));
           if (status) {
             status.className = 'form-status form-status--ok is-visible';

@@ -32,8 +32,8 @@ Every form posts to `form-handler.php`.
 2. Open `form-handler.php` and edit the two lines at the top:
 
    ```php
-   $CLUB_EMAIL = 'info@chegutucommunityfc.com';    // where enquiries arrive
-   $FROM_EMAIL = 'website@chegutucommunityfc.com'; // must be a real mailbox on YOUR domain
+   $CLUB_EMAIL = 'admin@ccfc-zw.com';    // where enquiries arrive
+   $FROM_EMAIL = 'admin@ccfc-zw.com'; // must be a real mailbox on YOUR domain
    ```
 
    `$FROM_EMAIL` **must** be a mailbox that exists on your own domain, or the

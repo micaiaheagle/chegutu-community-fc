@@ -35,7 +35,7 @@ CCFC.club = {
   boys: 'Chegutu Community Boys FC',
   motto: 'Developing Talent • Building Character • Inspiring Communities',
   ground: 'Pfupajena Grounds, Chegutu',
-  email: 'info@chegutucommunityfc.com',
+  email: 'admin@ccfc-zw.com',
   phoneZW: '+263 784 658 667',
   phoneUK: '+44 7482 384389',
   whatsapp: '263784658667',
