@@ -120,25 +120,45 @@ into the club's own policy on the Safeguarding page.
 
 ---
 
+## 4a. What changed in the latest update
+
+- **The league table is now the real one.** Official ZWPSL log, Matchday 15.
+  Chegutu Community sit **14th of 15** with 2 W, 0 D, 12 L and 6 points. The
+  homepage mini-table shows the top four, then a break, then our own position —
+  a plain top-six would have hidden us entirely.
+- **The invented results are gone.** They showed wins the record does not
+  support. Only the verified 1–3 against Herentals Queens remains. Add real
+  results to `CCFC.results` as they happen.
+- **Lillian Masase** is on the Coaches & Staff page with her photograph.
+- **Boys U19** — 23 photographs from a Division Two matchday, their own gallery
+  filter, a rebuilt team page and a homepage section. Credited to Bhora Redu ZW
+  Media.
+- **Brighton Tinago film** on the homepage. He plays for **Chegutu Town FC**,
+  not this club, so the section is framed as Chegutu football rather than
+  implying he is one of ours. Change it if you would rather it were not there.
+- **WhatsApp channel** linked from the Match Centre heading.
+- **The hero video now plays on phones.** It previously loaded only above
+  768px. It still skips anyone on Save-Data or a 2G connection.
+
+### Updating the league table each matchday
+
+Open `assets/js/data.js`, find `CCFC.tables.women.rows`, and edit the numbers
+straight off the league's published log. Update `season:` to the new matchday.
+Nothing else needs touching — the homepage, table page and stats page all read
+from that one list. Leave `club:true` on the Chegutu row so it stays highlighted.
+
+The Form column only appears if you add a `form:'WWDLL'` value to the rows. With
+no form data it hides itself rather than showing an empty column.
+
+---
+
 ## 4b. Two things waiting for you
 
-### The head coach's photograph — **one file drop**
+### ~~The head coach's photograph~~ — done
 
-Save her photo (green club tracksuit, light wall) as:
-
-```
-assets/img/staff/head-coach.jpg
-```
-
-Portrait orientation, at least 720 × 900px, under about 250 KB. The moment the
-file exists she appears as the large feature card at the top of **Coaches &
-Staff**. Until then the site shows the club crest in its place rather than a
-broken image — but the browser console will log one 404 for that file, which
-disappears as soon as you add it.
-
-To publish her **name**, open `assets/js/data.js`, find the first entry in
-`CCFC.staff` and replace `'Head Coach'` with her name. Her role line stays.
-Her name was deliberately not invented.
+Lillian Masase is live on **Coaches & Staff** as the lead feature card, with her
+photograph at `assets/img/staff/head-coach.jpg`. To change either, replace that
+file or edit the first entry in `CCFC.staff`.
 
 ### The hero video
 

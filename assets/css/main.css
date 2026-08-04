@@ -1729,6 +1729,12 @@ blockquote{
 .data-table tbody tr.is-club{background:rgba(255,240,15,.14);font-weight:700}
 .data-table tbody tr.is-club td{color:var(--ink-900)}
 .data-table tbody tr.is-club td:first-child{box-shadow:inset 4px 0 0 var(--gold-400)}
+/* the break between the leaders and our own position */
+.data-table tbody tr.is-gap td{
+  text-align:center;color:var(--ink-300);letter-spacing:.5em;
+  padding:.3rem;background:var(--cream);
+}
+.data-table tbody tr.is-gap:hover{background:var(--cream)}
 .data-table .team-cell{display:flex;align-items:center;gap:.65rem;text-align:left}
 .data-table .team-cell img,.data-table .team-cell .mini-crest{
   width:26px;height:26px;flex:none;border-radius:50%;object-fit:contain;
@@ -1852,6 +1858,50 @@ blockquote{
   transition:background var(--t-fast)}
 .lightbox__close:hover{background:var(--live)}
 .lightbox__close svg{width:20px;height:20px}
+
+/* Feature video — a big click-to-play still */
+.video-feature{
+  position:relative;display:block;width:100%;padding:0;border:0;
+  border-radius:var(--r-md);overflow:hidden;background:var(--green-900);
+  cursor:pointer;isolation:isolate;box-shadow:var(--sh-2);
+  transition:transform var(--t) var(--ease-out),box-shadow var(--t);
+}
+.video-feature:hover{transform:translateY(-6px);box-shadow:var(--sh-3)}
+.video-feature img{width:100%;aspect-ratio:16/9;object-fit:cover;
+  transition:transform var(--t-slow) var(--ease-out),filter var(--t);filter:saturate(.92)}
+.video-feature:hover img{transform:scale(1.05);filter:saturate(1.05)}
+.video-feature::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to top,rgba(10,20,8,.6),transparent 55%);
+}
+.video-feature__play{
+  position:absolute;inset:0;z-index:2;display:grid;place-items:center;
+}
+.video-feature__play svg{
+  width:26px;height:26px;margin-left:4px;color:var(--ink-900);
+  background:var(--gold-400);border-radius:50%;padding:22px;
+  box-sizing:content-box;box-shadow:0 10px 34px rgba(0,0,0,.4);
+  transition:transform var(--t) var(--ease-spring);
+}
+.video-feature:hover .video-feature__play svg{transform:scale(1.12)}
+/* a ring that keeps pulsing so the still reads as playable */
+.video-feature__play::before{
+  content:"";position:absolute;width:118px;height:118px;border-radius:50%;
+  border:2px solid rgba(255,240,15,.6);animation:playPulse 2.4s var(--ease) infinite;
+}
+@keyframes playPulse{
+  0%{transform:scale(.72);opacity:.9}
+  70%{transform:scale(1.25);opacity:0}
+  100%{opacity:0}
+}
+.video-feature__tag{
+  position:absolute;left:1rem;bottom:1rem;z-index:3;
+  background:var(--ink-900);color:#fff;padding:.44rem .9rem;
+  font-family:var(--font-head);font-weight:700;font-size:.76rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%);
+}
+@media (prefers-reduced-motion:reduce){.video-feature__play::before{animation:none;opacity:0}}
 
 /* Video card */
 .video-card{position:relative;border-radius:var(--r-md);overflow:hidden;box-shadow:var(--sh-1);

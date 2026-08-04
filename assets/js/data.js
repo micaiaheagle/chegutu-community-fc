@@ -5,11 +5,24 @@
    Everything below drives the fixtures, results, league table, squad,
    staff, news, videos and shop across the whole website.
 
-   >>> IMPORTANT — SAMPLE DATA NOTICE <<<
-   Fixtures, results, league standings, squad names, statistics, news
-   articles and shop prices below are REALISTIC PLACEHOLDERS supplied so the
-   site looks complete at launch. Replace them with the club's real data
-   before going live. See README-HANDOVER.md for step-by-step instructions.
+   >>> WHAT IS REAL AND WHAT IS NOT <<<
+
+   REAL — verified, leave alone unless the facts change:
+     • CCFC.tables.women .... official ZWPSL log table, Matchday 15
+     • CCFC.results ......... the single Herentals result, read off our own
+                              match footage
+     • CCFC.staff[0] ........ Lillian Masase, Head Coach, with her photograph
+     • CCFC.club ............ address, phones, email, WhatsApp channel
+
+   STILL PLACEHOLDER — replace before promoting the site widely:
+     • CCFC.fixtures ........ dates and opponents are illustrative
+     • CCFC.tables.boys ..... provisional until the Division Two log is issued
+     • CCFC.squad ........... sample names; squad cards deliberately use the
+                              crest so no real person sits beside a made-up name
+     • CCFC.news ............ drafts, written to be plausible and on-message
+     • CCFC.products ........ set your real prices
+
+   See README-HANDOVER.md for how to edit each one.
    ========================================================================== */
 
 window.CCFC = window.CCFC || {};
@@ -26,6 +39,8 @@ CCFC.club = {
   phoneZW: '+263 784 658 667',
   phoneUK: '+44 7482 384389',
   whatsapp: '263784658667',
+  /* The league log tables and matchday updates are posted here first. */
+  whatsappChannel: 'https://whatsapp.com/channel/0029VacqpcQISTkJsVTPlZ34',
   address: 'P1034 Pfupajena, Chegutu, Mashonaland West, Zimbabwe',
   founded: 2019
 };
@@ -51,47 +66,55 @@ CCFC.fixtures = [
 ];
 
 /* --------------------------------------------------------------- RESULTS */
+/* ===== RESULTS ==============================================================
+   Only verified results appear here. The one entry below is read directly off
+   the club's own match footage (the hero video and the Video page).
+
+   The rest of the season's results are not listed because we do not have them
+   confirmed — and the league table records a played record of 2 W, 0 D, 12 L,
+   so nothing invented would be honest. Add each real result as it happens,
+   copying the shape of the line below. The Results page, the matchday ticker
+   and the homepage all read from this list automatically. */
 CCFC.results = [
-  /* REAL RESULT — taken from the club's own match footage (see the hero video
-     and the Video page). Everything below it is sample data. */
-  { id:'r0',  team:'women', date:'2026-08-02', opponent:'Herentals Queens',      home:true,  gf:1, ga:3, comp:'ZWPSL',        scorers:'—', report:'a1' },
-  { id:'r1',  team:'women', date:'2026-07-25', opponent:'Cyclone Queens',        home:true,  gf:3, ga:0, comp:'ZWPSL',        scorers:'Moyo 12’, Ncube 44’, Dube 71’' },
-  { id:'r2',  team:'women', date:'2026-07-25', opponent:'Blue Swallows Queens',  home:false, gf:2, ga:2, comp:'ZWPSL',        scorers:'Chirwa 23’, Moyo 88’' },
-  { id:'r3',  team:'boys',  date:'2026-07-26', opponent:'TelOne Chegutu',        home:true,  gf:2, ga:1, comp:'Division Two', scorers:'Mutasa 33’, Banda 65’' },
-  { id:'r4',  team:'women', date:'2026-07-18', opponent:'Faith Drive Queens',    home:true,  gf:4, ga:1, comp:'ZWPSL',        scorers:'Dube 8’, 52’, Moyo 30’, Sibanda 77’' },
-  { id:'r5',  team:'women', date:'2026-07-11', opponent:'Conduit Soccer Academy',home:false, gf:1, ga:0, comp:'ZWPSL',        scorers:'Ncube 61’' },
-  { id:'r6',  team:'boys',  date:'2026-07-12', opponent:'Norton Community',      home:false, gf:1, ga:1, comp:'Division Two', scorers:'Banda 49’' },
-  { id:'r7',  team:'women', date:'2026-07-04', opponent:'Lobengula City Queens', home:true,  gf:2, ga:0, comp:'ZWPSL',        scorers:'Moyo 19’, Chirwa 70’' },
-  { id:'r8',  team:'boys',  date:'2026-06-28', opponent:'Chegutu Berks',         home:false, gf:0, ga:2, comp:'Division Two', scorers:'—' },
-  { id:'r9',  team:'women', date:'2026-06-27', opponent:'Herentals Queens',      home:false, gf:1, ga:3, comp:'ZWPSL',        scorers:'Dube 55’' },
-  { id:'r10', team:'women', date:'2026-06-20', opponent:'Harare City Queens',    home:true,  gf:2, ga:1, comp:'ZWPSL',        scorers:'Sibanda 14’, Moyo 82’' }
+  { id:'r0', team:'women', date:'2026-08-02', opponent:'Herentals Queens', home:true,
+    gf:1, ga:3, comp:'ZWPSL', scorers:'—', report:'a1' }
 ];
 
 /* ---------------------------------------------------------- LEAGUE TABLES */
 CCFC.tables = {
   women: {
+    /* ===== REAL STANDINGS =====================================================
+       Official ZWPSL log table, Matchday 15, as published by the Zimbabwe
+       Women's Premier Soccer League. This is not sample data — update it from
+       the league's own table after each matchday and nothing else needs
+       changing; the homepage, table page and stats page all read from here. */
     name: 'Zimbabwe Women’s Premier Soccer League',
-    season: '2026',
+    season: '2026 · Matchday 15',
+    official: true,
     rows: [
-      { pos:1,  team:'Herentals Queens',       p:10, w:8, d:1, l:1, gf:22, ga:6,  form:'WWDWW' },
-      { pos:2,  team:'Black Rhinos Queens',    p:10, w:7, d:2, l:1, gf:19, ga:7,  form:'WWWDL' },
-      { pos:3,  team:'Chegutu Community Queens', p:10, w:6, d:2, l:2, gf:18, ga:9, form:'WWDLW', club:true },
-      { pos:4,  team:'Harare City Queens',     p:10, w:6, d:1, l:3, gf:16, ga:11, form:'LWWWL' },
-      { pos:5,  team:'Correctional Queens',    p:10, w:5, d:3, l:2, gf:14, ga:10, form:'DWDWW' },
-      { pos:6,  team:'Chapungu Queens',        p:10, w:5, d:2, l:3, gf:13, ga:11, form:'WLWDW' },
-      { pos:7,  team:'Highlanders Royals',     p:10, w:4, d:3, l:3, gf:12, ga:11, form:'DDWLW' },
-      { pos:8,  team:'Platinum Royals',        p:10, w:4, d:2, l:4, gf:12, ga:13, form:'LWDLW' },
-      { pos:9,  team:'Kwekwe Queens',          p:10, w:3, d:4, l:3, gf:11, ga:12, form:'DDLDW' },
-      { pos:10, team:'Sheasham Queens',        p:10, w:3, d:2, l:5, gf:10, ga:15, form:'LLWDL' },
-      { pos:11, team:'Mpopoma Sports Academy', p:10, w:2, d:4, l:4, gf:9,  ga:14, form:'DLDDW' },
-      { pos:12, team:'Faith Drive Queens',     p:10, w:2, d:2, l:6, gf:8,  ga:17, form:'LLDWL' },
-      { pos:13, team:'Conduit Soccer Academy', p:10, w:1, d:3, l:6, gf:7,  ga:18, form:'LDLLD' },
-      { pos:14, team:'Lobengula City Queens',  p:10, w:1, d:1, l:8, gf:6,  ga:23, form:'LLLDL' }
+      { pos:1,  team:'Herentals Queens',        p:14, w:10, d:3, l:1,  gf:51, ga:8  },
+      { pos:2,  team:'Chapungu Queens FC',      p:14, w:10, d:3, l:1,  gf:41, ga:7  },
+      { pos:3,  team:'Correctional Queens FC',  p:14, w:10, d:2, l:2,  gf:24, ga:5  },
+      { pos:4,  team:'Platinum Royals',         p:14, w:10, d:1, l:3,  gf:26, ga:12 },
+      { pos:5,  team:'Black Rhinos Queens',     p:14, w:9,  d:3, l:2,  gf:27, ga:5  },
+      { pos:6,  team:'Harare City Queens',      p:14, w:6,  d:3, l:5,  gf:24, ga:11 },
+      { pos:7,  team:'Kwekwe Queens',           p:13, w:6,  d:3, l:4,  gf:19, ga:14 },
+      { pos:8,  team:'Mpopoma SA',              p:14, w:6,  d:1, l:7,  gf:17, ga:25 },
+      { pos:9,  team:'Rufaro Starlets',         p:14, w:5,  d:1, l:8,  gf:20, ga:41 },
+      { pos:10, team:'Conduit SA',              p:14, w:4,  d:2, l:8,  gf:21, ga:41 },
+      { pos:11, team:'Faith Drive Academy',     p:13, w:3,  d:4, l:6,  gf:12, ga:21 },
+      { pos:12, team:'Cranborne Royals',        p:14, w:2,  d:5, l:7,  gf:11, ga:24 },
+      { pos:13, team:'Caps United Royals',      p:14, w:2,  d:4, l:8,  gf:11, ga:31 },
+      { pos:14, team:'Chegutu Community',       p:14, w:2,  d:0, l:12, gf:11, ga:30, club:true },
+      { pos:15, team:'Ngezi Platinum Queens',   p:14, w:0,  d:3, l:11, gf:5,  ga:45 }
     ]
   },
   boys: {
-    name: 'Mashonaland West Division Two',
+    name: 'Mashonaland West Division Two &mdash; Boys U19',
     season: '2026',
+    /* Standings for the boys U19 side. Replace with the official
+       Mash West Division Two log as each matchday is published. */
+    provisional: true,
     rows: [
       { pos:1, team:'Chegutu Berks',          p:8, w:5, d:2, l:1, gf:14, ga:6,  form:'WWDWL' },
       { pos:2, team:'Norton Community',       p:8, w:4, d:3, l:1, gf:12, ga:7,  form:'DWWDW' },
@@ -141,7 +164,7 @@ CCFC.squad = [
 CCFC.staff = [
   /* `lead: true` gives a member of staff the large feature card.
      Replace `name` with her real name when you are ready to publish it. */
-  { name:'Head Coach', role:'Women’s First Team', dept:'Football Operations',
+  { name:'Lillian Masase', role:'Head Coach &mdash; Women’s First Team', dept:'Football Operations',
     photo:'staff/head-coach.jpg', lead:true,
     bio:'Leads the Women’s First Team in the Zimbabwe Women’s Premier Soccer League, ' +
         'responsible for selection, training programme, match preparation and the ' +

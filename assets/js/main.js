@@ -408,9 +408,10 @@
     var video = vSlide ? vSlide.querySelector('video') : null;
     if (video) {
       var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      var slow = conn && (conn.saveData === true || /^(2g|3g|slow-2g)$/.test(conn.effectiveType || ''));
-      var wide = window.matchMedia('(min-width: 768px)').matches;
-      if (!slow && wide && !REDUCED) {
+      /* Phones get the video too — just the smaller file. Only an explicit
+         Save-Data request or a genuinely slow connection skips it. */
+      var slow = conn && (conn.saveData === true || /^(2g|slow-2g)$/.test(conn.effectiveType || ''));
+      if (!slow && !REDUCED) {
         var srcEl = document.createElement('source');
         srcEl.src = video.getAttribute(window.innerWidth >= 1100 ? 'data-src-720' : 'data-src-480');
         srcEl.type = 'video/mp4';
@@ -898,6 +899,8 @@
   /* ======================================================= TABLES ======= */
   function renderTable(host, key) {
     var t = (D.tables || {})[key]; if (!t || !host) return;
+    /* the Form column only appears when there is real form data to put in it */
+    var hasForm = t.rows.some(function (r) { return r.form; });
     var rows = t.rows.map(function (r) {
       var pts = r.w * 3 + r.d, gd = r.gf - r.ga;
       var form = String(r.form || '').split('').map(function (c) {
@@ -913,7 +916,7 @@
         '<td class="num">' + r.p + '</td><td>' + r.w + '</td><td>' + r.d + '</td><td>' + r.l + '</td>' +
         '<td>' + r.gf + '</td><td>' + r.ga + '</td><td class="num">' + (gd > 0 ? '+' : '') + gd + '</td>' +
         '<td class="num">' + pts + '</td>' +
-        '<td><span class="form-row">' + form + '</span></td></tr>';
+        (hasForm ? '<td><span class="form-row">' + form + '</span></td>' : '') + '</tr>';
     }).join('');
     host.innerHTML =
       '<div class="table-wrap"><table class="data-table"><caption class="sr-only">' + raw(t.name) + ' ' + raw(t.season) + ' standings</caption>' +
@@ -921,9 +924,13 @@
       '<th scope="col" title="Won">W</th><th scope="col" title="Drawn">D</th><th scope="col" title="Lost">L</th>' +
       '<th scope="col" title="Goals for">GF</th><th scope="col" title="Goals against">GA</th>' +
       '<th scope="col" title="Goal difference">GD</th><th scope="col" title="Points">PTS</th>' +
-      '<th scope="col">Form</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-      '<div class="table-legend"><span><i style="background:var(--win)"></i> Win</span><span><i style="background:var(--draw)"></i> Draw</span>' +
-      '<span><i style="background:var(--loss)"></i> Loss</span><span><i style="background:var(--gold-400)"></i> Chegutu Community FC</span></div>';
+      (hasForm ? '<th scope="col">Form</th>' : '') + '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="table-legend">' +
+        (hasForm ? '<span><i style="background:var(--win)"></i> Win</span><span><i style="background:var(--draw)"></i> Draw</span>' +
+                   '<span><i style="background:var(--loss)"></i> Loss</span>' : '') +
+        '<span><i style="background:var(--gold-400)"></i> Chegutu Community FC</span>' +
+        (t.official ? '<span>' + icon('i-check-circle') + ' Official league table &middot; ' + raw(t.season) + '</span>' : '') +
+      '</div>';
   }
 
   function initTables() {
@@ -932,14 +939,28 @@
     if (b) renderTable(b, 'boys');
     if (mini) {
       var t = D.tables.women;
+      var all = t.rows, ci = all.findIndex(function (r) { return r.club; });
+      /* always show the leaders and always show us, however far apart they are */
+      var show = all.slice(0, 4);
+      var gap = false;
+      if (ci > 4) {
+        gap = true;
+        show = show.concat(all.slice(Math.max(4, ci - 1), Math.min(all.length, ci + 2)));
+      } else {
+        show = all.slice(0, 6);
+      }
+      function row(r) {
+        var gd = r.gf - r.ga;
+        return '<tr' + (r.club ? ' class="is-club"' : '') + '><td>' + r.pos + '</td>' +
+          '<td><span class="team-cell">' + (r.club ? '<img src="assets/img/crest-64.png" alt="" width="26" height="23">' : '<span class="mini-crest">' + esc(initials(r.team)) + '</span>') +
+          '<b>' + raw(r.team) + '</b></span></td><td class="num">' + r.p + '</td><td>' + (gd > 0 ? '+' : '') + gd + '</td><td class="num">' + (r.w * 3 + r.d) + '</td></tr>';
+      }
+      var body = show.slice(0, 4).map(row).join('') +
+        (gap ? '<tr class="is-gap"><td colspan="5">&middot;&middot;&middot;</td></tr>' : '') +
+        show.slice(4).map(row).join('');
       mini.innerHTML = '<div class="table-wrap"><table class="data-table" style="min-width:0"><thead><tr>' +
         '<th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">GD</th><th scope="col">PTS</th></tr></thead><tbody>' +
-        t.rows.slice(0, 6).map(function (r) {
-          var gd = r.gf - r.ga;
-          return '<tr' + (r.club ? ' class="is-club"' : '') + '><td>' + r.pos + '</td>' +
-            '<td><span class="team-cell">' + (r.club ? '<img src="assets/img/crest-64.png" alt="" width="26" height="23">' : '<span class="mini-crest">' + esc(initials(r.team)) + '</span>') +
-            '<b>' + raw(r.team) + '</b></span></td><td class="num">' + r.p + '</td><td>' + (gd > 0 ? '+' : '') + gd + '</td><td class="num">' + (r.w * 3 + r.d) + '</td></tr>';
-        }).join('') + '</tbody></table></div>';
+        body + '</tbody></table></div>';
     }
   }
 
@@ -1169,9 +1190,7 @@
       }).join('') || '<div class="empty" style="grid-column:1/-1">' + icon('i-video') + '<h4>No videos yet</h4></div>';
 
       /* playable clips open in the lightbox shell as a real <video> */
-      $$('[data-play]', host).forEach(function (b) {
-        on(b, 'click', function () { openVideo(b.getAttribute('data-play'), b.querySelector('h4').textContent); });
-      });
+      initFeatureVideos();
       initReveal();
     }
     render('all');
@@ -1191,13 +1210,16 @@
     var strip = $('#galleryStrip');
     var all = D.gallery || [];
 
-    if (strip) {
-      var n = +(strip.getAttribute('data-limit') || 8);
-      var pick = all.slice(0, n);
-      strip.innerHTML = pick.map(function (g, i) { return galItem(g, i); }).join('');
-      wireLightbox(strip, pick);
-      initReveal();
-    }
+    /* any number of strips on a page, each optionally filtered by category */
+    $$('[data-limit][id$="Strip"]').forEach(function (el) {
+      var n = +(el.getAttribute('data-limit') || 8);
+      var cat = el.getAttribute('data-cat');
+      var pool = cat ? all.filter(function (g) { return g.cat === cat; }) : all;
+      var pick = pool.slice(0, n);
+      el.innerHTML = pick.map(function (g, i) { return galItem(g, i); }).join('');
+      wireLightbox(el, pick);
+    });
+    if (strip) initReveal();
 
     if (host) {
       var counter = $('#galleryCount');
@@ -1225,9 +1247,14 @@
     }
   }
 
+  /* photographs live in assets/img/<dir>/ — the club archive has no dir,
+     newer sets (the Boys U19 shoot) carry one */
+  function galThumb(g) { return 'assets/img/' + (g.dir ? g.dir + '/thumbs/' : 'thumbs/') + img(g.id); }
+  function galFull(g)  { return 'assets/img/' + (g.dir ? g.dir + '/' : 'photos/') + img(g.id); }
+
   function galItem(g, i) {
     return '<button type="button" class="gal-item" data-gal="' + i + '" data-reveal="zoom" aria-label="Open photo: ' + esc(g.cap) + '">' +
-      '<img src="assets/img/thumbs/' + esc(img(g.id)) + '" alt="' + esc(g.cap) + '" loading="lazy" decoding="async" width="' + g.w + '" height="' + g.h + '">' +
+      '<img src="' + galThumb(g) + '" alt="' + esc(g.cap) + '" loading="lazy" decoding="async" width="' + g.w + '" height="' + g.h + '">' +
       '<span class="gal-item__zoom">' + icon('i-zoom') + '</span>' +
       '<span class="gal-item__cap">' + esc(g.cap) + '</span></button>';
   }
@@ -1269,10 +1296,24 @@
   function paintLightbox() {
     var g = LB.items[LB.i]; if (!g) return;
     var el = $('#lbImg'), cap = $('#lbCap'), num = $('#lbNum');
-    if (el) { el.src = 'assets/img/photos/' + img(g.id); el.alt = g.cap; }
+    if (el) { el.src = galFull(g); el.alt = g.cap; }
     if (cap) cap.textContent = g.cap;
     if (num) num.textContent = (LB.i + 1) + ' / ' + LB.items.length;
   }
+  /* Feature stills anywhere on the site open their film in the lightbox. */
+  function initFeatureVideos() {
+    $$('[data-play]').forEach(function (b) {
+      if (b.dataset.playBound) return;
+      b.dataset.playBound = '1';
+      on(b, 'click', function () {
+        var small = b.getAttribute('data-play-sm');
+        var src = (small && window.innerWidth < 900) ? small : b.getAttribute('data-play');
+        var t = b.querySelector('h4') || b.querySelector('.video-feature__tag');
+        openVideo(src, b.getAttribute('aria-label') || (t ? t.textContent : ''));
+      });
+    });
+  }
+
   function initLightboxChrome() {
     var lb = $('#lightbox'); if (!lb) return;
     function close() {
@@ -1692,7 +1733,7 @@
     initTicker(); initHero(); initAccordion(); initTabs(); initMarquee(); initCardStacks();
     initFixtures(); initTables(); initSquad(); initPlayer(); initStaff();
     initNews(); initArticle(); initVideos();
-    initGallery(); initLightboxChrome();
+    initGallery(); initLightboxChrome(); initFeatureVideos();
     initShop(); initCartDrawer(); initStats();
     initForms(); initDonate(); initMembershipCard(); initYear();
     initLineHeadings(); initCounters(); initParallax(); initReveal();
