@@ -767,6 +767,17 @@
   }
 
   /* ==================================================== FIXTURES ======== */
+  /* One slot of a fixture/result card. `isUs` decides whether the badge is the
+     club crest or the opponent's initials — the two used to be worked out
+     separately from the name, which put our crest beside their name away. */
+  function teamSlot(name, isUs) {
+    var badge = isUs
+      ? '<img class="match-card__crest" src="assets/img/crest-128.png" alt="" width="52" height="45">'
+      : '<span class="match-card__crest">' + esc(initials(String(name).replace(/&amp;/g, '&'))) + '</span>';
+    return '<div class="match-card__team">' + badge +
+           '<span class="match-card__name">' + name + '</span></div>';
+  }
+
   function matchCard(f) {
     var us = 'Chegutu Community', them = raw(f.opponent);
     var home = f.home;
@@ -775,11 +786,9 @@
         '<span>' + (home ? 'Home' : 'Away') + ' &middot; ' + (f.team === 'women' ? 'Women' : 'Boys') + '</span></div>' +
       '<div class="match-card__body">' +
         '<div class="match-card__teams">' +
-          '<div class="match-card__team"><img class="match-card__crest" src="assets/img/crest-128.png" alt="" width="52" height="45"><span class="match-card__name">' + (home ? us : them) + '</span></div>' +
+          teamSlot(home ? us : them, home) +
           '<span class="match-card__vs">V</span>' +
-          '<div class="match-card__team">' + (home
-            ? '<span class="match-card__crest">' + esc(initials(them)) + '</span><span class="match-card__name">' + them + '</span>'
-            : '<img class="match-card__crest" src="assets/img/crest-128.png" alt="" width="52" height="45"><span class="match-card__name">' + us + '</span>') + '</div>' +
+          teamSlot(home ? them : us, !home) +
         '</div>' +
         '<div class="match-card__kick">' + esc(fmtShort(f.date)) + ' &middot; ' + esc(f.time) + '</div>' +
         '<div class="match-card__venue">' + icon('i-pin') + '<span>' + raw(f.venue) + '</span></div>' +
@@ -798,13 +807,9 @@
         '<span>Full Time &middot; ' + (r.team === 'women' ? 'Women' : 'Boys') + '</span></div>' +
       '<div class="match-card__body">' +
         '<div class="match-card__teams">' +
-          '<div class="match-card__team">' + (r.home
-            ? '<img class="match-card__crest" src="assets/img/crest-128.png" alt="" width="52" height="45"><span class="match-card__name">' + us + '</span>'
-            : '<span class="match-card__crest">' + esc(initials(them)) + '</span><span class="match-card__name">' + them + '</span>') + '</div>' +
+          teamSlot(r.home ? us : them, r.home) +
           '<span class="match-card__score">' + (r.home ? ours : theirs) + '<span>&ndash;</span>' + (r.home ? theirs : ours) + '</span>' +
-          '<div class="match-card__team">' + (r.home
-            ? '<span class="match-card__crest">' + esc(initials(them)) + '</span><span class="match-card__name">' + them + '</span>'
-            : '<img class="match-card__crest" src="assets/img/crest-128.png" alt="" width="52" height="45"><span class="match-card__name">' + us + '</span>') + '</div>' +
+          teamSlot(r.home ? them : us, !r.home) +
         '</div>' +
         '<div class="match-card__kick"><span class="result-pill result-pill--' + res + '" style="display:inline-grid;vertical-align:middle;margin-right:.4rem">' +
           res.toUpperCase() + '</span>' + esc(fmtShort(r.date)) + '</div>' +
@@ -1029,7 +1034,7 @@
         '</div>' +
         '<div class="split__body">' +
           '<p class="kicker">' + (p.team === 'women' ? 'Women&rsquo;s First Team' : 'Boys First Team') + (p.captain ? ' &middot; Club Captain' : '') + '</p>' +
-          '<h1 class="display">' + raw(p.name) + '</h1>' +
+          '<h1>' + raw(p.name) + '</h1>' +
           '<p class="lead">' + raw(p.bio) + '</p>' +
           '<div class="stats stats--light mt-2">' +
             '<div class="stat"><span class="stat__num" data-count="' + p.apps + '">0</span><span class="stat__label">Appearances</span></div>' +
@@ -1080,8 +1085,11 @@
     all.forEach(function (s) { if (!s.lead) (groups[s.dept] = groups[s.dept] || []).push(s); });
     html += Object.keys(groups).map(function (dept) {
       return '<div class="mb-3" data-reveal><h3 class="mb-2" style="padding-bottom:.6rem;border-bottom:2px solid var(--gold-400)">' + raw(dept) + '</h3>' +
-        '<div class="grid grid-2">' + groups[dept].map(function (s) {
-          return '<article class="staff-card"><div class="staff-card__img"><img src="assets/img/' + esc(img(s.photo)) + '" alt="" loading="lazy" width="220" height="260" onerror="' + FALLBACK + '"></div>' +
+        '<div class="grid staff-grid">' + groups[dept].map(function (s) {
+          var pic = s.photo
+            ? '<img src="assets/img/' + esc(img(s.photo)) + '" alt="" loading="lazy" width="220" height="260" onerror="' + FALLBACK + '">'
+            : '<span class="staff-card__crest"><img src="assets/img/crest-256.png" alt="" width="256" height="222" loading="lazy"></span>';
+          return '<article class="staff-card"><div class="staff-card__img">' + pic + '</div>' +
             '<div class="staff-card__body"><span class="staff-card__role">' + raw(s.role) + '</span>' +
             '<span class="staff-card__name">' + raw(s.name) + '</span>' +
             '<span class="staff-card__dept">' + raw(s.dept) + ' Department</span></div></article>';

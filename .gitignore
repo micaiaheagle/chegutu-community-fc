@@ -10,3 +10,6 @@ desktop.ini
 *~
 .vscode/
 .idea/
+
+# client screenshot exports live outside the deployed site
+/SCREENSHOTS/

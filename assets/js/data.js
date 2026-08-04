@@ -161,6 +161,10 @@ CCFC.squad = [
 ];
 
 /* ----------------------------------------------------------------- STAFF */
+/* Only Lillian Masase carries a photograph, because she is the only member
+   of staff we can actually name. Everyone else shows the club crest until
+   the club supplies a real name and headshot — add  photo:'staff/xxx.jpg'
+   alongside the name to swap the crest for a portrait. */
 CCFC.staff = [
   /* `lead: true` gives a member of staff the large feature card.
      Replace `name` with her real name when you are ready to publish it. */
@@ -169,25 +173,25 @@ CCFC.staff = [
     bio:'Leads the Women’s First Team in the Zimbabwe Women’s Premier Soccer League, ' +
         'responsible for selection, training programme, match preparation and the ' +
         'development of every player in the senior women’s squad.' },
-  { name:'Assistant Coach',               role:'Women’s First Team',   dept:'Football Operations', photo:'photos/p013.jpg' },
-  { name:'Goalkeeping Coach',             role:'Both Senior Teams',         dept:'Football Operations', photo:'photos/p012.jpg' },
-  { name:'Head Coach',                    role:'Boys First Team',           dept:'Football Operations', photo:'photos/p096.jpg' },
-  { name:'Academy Director',              role:'U8 – U20 Programme',   dept:'Academy',             photo:'photos/p021.jpg' },
-  { name:'Lead Academy Coach',            role:'U14 – U18',            dept:'Academy',             photo:'photos/p014.jpg' },
-  { name:'Head of Women’s Football', role:'Player Development',        dept:'Women’s Football', photo:'photos/p033.jpg' },
-  { name:'Club Doctor',                   role:'Medical Department',        dept:'Medical',             photo:'photos/p113.jpg' },
-  { name:'Physiotherapist',               role:'Medical Department',        dept:'Medical',             photo:'photos/p102.jpg' },
-  { name:'First Aid Lead',                role:'Matchday Medical Cover',    dept:'Medical',             photo:'photos/p078.jpg' },
-  { name:'Strength &amp; Conditioning Coach', role:'Sports Science',        dept:'Sports Science',      photo:'photos/p081.jpg' },
-  { name:'Performance Analyst',           role:'Analysis Department',       dept:'Analysis',            photo:'photos/p012.jpg' },
-  { name:'Head of Recruitment',           role:'Scouting &amp; Recruitment', dept:'Scouting',           photo:'photos/p096.jpg' },
-  { name:'Designated Safeguarding Officer', role:'Child Protection',        dept:'Safeguarding',        photo:'photos/p033.jpg' },
-  { name:'Player Welfare Officer',        role:'Wellbeing &amp; Mental Health', dept:'Safeguarding',    photo:'photos/p102.jpg' },
-  { name:'Education Officer',             role:'Academic Support',          dept:'Education',           photo:'photos/p088.jpg' },
-  { name:'Community Development Manager', role:'Outreach Programmes',       dept:'Community',           photo:'photos/p047.jpg' },
-  { name:'Commercial Manager',            role:'Partnerships &amp; Revenue', dept:'Commercial',         photo:'photos/p035.jpg' },
-  { name:'Media &amp; Communications Officer', role:'Content &amp; Press',  dept:'Media',               photo:'photos/p036.jpg' },
-  { name:'Team Manager',                  role:'Logistics &amp; Travel',    dept:'Administration',      photo:'photos/p018.jpg' }
+  { name:'Assistant Coach',               role:'Women’s First Team',   dept:'Football Operations' },
+  { name:'Goalkeeping Coach',             role:'Both Senior Teams',         dept:'Football Operations' },
+  { name:'Head Coach',                    role:'Boys First Team',           dept:'Football Operations' },
+  { name:'Academy Director',              role:'U8 – U20 Programme',   dept:'Academy' },
+  { name:'Lead Academy Coach',            role:'U14 – U18',            dept:'Academy' },
+  { name:'Head of Women’s Football', role:'Player Development',        dept:'Women’s Football' },
+  { name:'Club Doctor',                   role:'Medical Department',        dept:'Medical' },
+  { name:'Physiotherapist',               role:'Medical Department',        dept:'Medical' },
+  { name:'First Aid Lead',                role:'Matchday Medical Cover',    dept:'Medical' },
+  { name:'Strength &amp; Conditioning Coach', role:'Sports Science',        dept:'Sports Science' },
+  { name:'Performance Analyst',           role:'Analysis Department',       dept:'Analysis' },
+  { name:'Head of Recruitment',           role:'Scouting &amp; Recruitment', dept:'Scouting' },
+  { name:'Designated Safeguarding Officer', role:'Child Protection',        dept:'Safeguarding' },
+  { name:'Player Welfare Officer',        role:'Wellbeing &amp; Mental Health', dept:'Safeguarding' },
+  { name:'Education Officer',             role:'Academic Support',          dept:'Education' },
+  { name:'Community Development Manager', role:'Outreach Programmes',       dept:'Community' },
+  { name:'Commercial Manager',            role:'Partnerships &amp; Revenue', dept:'Commercial' },
+  { name:'Media &amp; Communications Officer', role:'Content &amp; Press',  dept:'Media' },
+  { name:'Team Manager',                  role:'Logistics &amp; Travel',    dept:'Administration' }
 ];
 
 /* ------------------------------------------------------------------ NEWS */
