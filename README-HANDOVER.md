@@ -197,7 +197,7 @@ Replace these before promoting the site widely:
 | Social media links | Footer of every page + `data.js` | Currently point at expected handles — update to your real accounts. |
 | Email addresses | Throughout | `info@`, `safeguarding@`, `partners@`, `media@` — create these mailboxes or change the addresses. |
 | Video thumbnails | `videos.html` | Placeholder cards; embed real YouTube videos when you have them. |
-| Domain name | `sitemap.xml`, `robots.txt`, meta tags in each page | Replace `chegutucommunityfc.com` with your real domain. |
+| Domain name | `sitemap.xml`, `robots.txt`, meta tags in each page | Replace `ccfc-zw.com` with your real domain. |
 
 **Photography note:** the supplied archive is almost entirely the Women's First
 Team. The Boys First Team and Academy pages therefore use ground, facility and
@@ -288,7 +288,7 @@ All four are already installed in `assets/fonts/` — nothing to download.
 - [ ] `form-handler.php` — both email addresses set to real mailboxes
 - [ ] Send a test message through the contact form and confirm it arrives
 - [ ] AutoSSL run; padlock showing; `http://` redirects to `https://`
-- [ ] Real domain replacing `chegutucommunityfc.com` in `sitemap.xml`,
+- [ ] Real domain replacing `ccfc-zw.com` in `sitemap.xml`,
       `robots.txt` and the meta tags
 - [ ] Real social media links in the footer
 - [ ] Real fixtures, results and league standings in `data.js`

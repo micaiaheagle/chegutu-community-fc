@@ -79,15 +79,15 @@ Every later `git push` then redeploys the site automatically.
 ## Using your own domain
 
 Vercel → your project → **Settings** → **Domains** → add
-`chegutucommunityfc.com`. Vercel shows you the two DNS records to enter at
+`ccfc-zw.com`. Vercel shows you the two DNS records to enter at
 whoever sells you the domain. HTTPS is automatic.
 
-Then update the domain in three places and publish again:
+The site is already built for **https://ccfc-zw.com** — canonical tags,
+`sitemap.xml`, `robots.txt` and the social share tags all point there, and
+`.htaccess` strips `www.` so the two never disagree. Nothing to edit.
 
-- `sitemap.xml` — every `<loc>` line
-- `robots.txt` — the `Sitemap:` line
-- the `canonical` and `og:url` tags in each page — use your editor's
-  Find-and-Replace across the folder, searching for `chegutucommunityfc.com`
+If you ever move to a different domain, Find-and-Replace `ccfc-zw.com` across
+the folder and republish.
 
 ---
 

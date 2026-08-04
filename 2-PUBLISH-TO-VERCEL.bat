@@ -71,7 +71,7 @@ echo.
 echo    The address is printed just above, ending in .vercel.app
 echo    Copy it into a browser to see the site.
 echo.
-echo    To use chegutucommunityfc.com instead:
+echo    To use ccfc-zw.com instead:
 echo      vercel.com  -  your project  -  Settings  -  Domains
 echo.
 echo    IMPORTANT: contact forms need one more step on Vercel.

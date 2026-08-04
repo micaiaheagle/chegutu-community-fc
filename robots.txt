@@ -4,4 +4,4 @@ Allow: /
 Disallow: /form-submissions/
 Disallow: /form-handler.php
 
-Sitemap: https://www.chegutucommunityfc.com/sitemap.xml
+Sitemap: https://ccfc-zw.com/sitemap.xml

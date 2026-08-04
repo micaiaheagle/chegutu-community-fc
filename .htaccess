@@ -18,8 +18,15 @@ ServerSignature Off
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-  # ---- FORCE www ----------------------------------------------------------
-  # Remove the leading # on the next two lines to canonicalise to www.
+  # ---- FORCE non-www ------------------------------------------------------
+  # The site canonicalises to https://ccfc-zw.com (no www) — that is what the
+  # canonical tags, sitemap and Open Graph URLs all say. Strip www so the two
+  # never disagree.
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+  # If you would rather use www, delete the two lines above, uncomment the two
+  # below, AND change SITE in the canonical tags/sitemap to match.
   # RewriteCond %{HTTP_HOST} !^www\. [NC]
   # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
 
@@ -105,9 +112,9 @@ RedirectMatch 404 ^/form-submissions(/.*)?$
 
 # --------------------------------------------------------------- HOTLINKING -
 # Stops other websites embedding our photographs and using our bandwidth.
-# Replace chegutucommunityfc.com with your live domain before enabling.
+# Set for ccfc-zw.com. Change if the live domain differs.
 # <IfModule mod_rewrite.c>
 #   RewriteCond %{HTTP_REFERER} !^$
-#   RewriteCond %{HTTP_REFERER} !chegutucommunityfc\.com [NC]
+#   RewriteCond %{HTTP_REFERER} !ccfc-zw\.com [NC]
 #   RewriteRule \.(jpg|jpeg|png|webp)$ - [F,NC]
 # </IfModule>
